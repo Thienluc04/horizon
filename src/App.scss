@@ -1,0 +1,37 @@
+.hideChoose {
+  height: 0 !important;
+  opacity: 0;
+}
+
+.hiddenScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.showMenu {
+  transform: translateX(0) !important;
+  transition: all linear 0.3s;
+}
+
+.showOverlay {
+  visibility: visible !important;
+  opacity: 0.6 !important;
+  transition: all linear 0.3s;
+}
+
+.hideMenu {
+  transform: translate(-100%);
+  transition: all linear 0.3s;
+}
+
+.hideOverlay {
+  visibility: hidden;
+  opacity: 0;
+  transition: all linear 0.3s;
+}
+
+.descShort {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
