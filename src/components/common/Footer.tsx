@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export interface FooterProps {}
 
-export function Footer(props: FooterProps) {
+export function Footer({}: FooterProps) {
   return (
     <div>
       <div className="xl:flex hidden justify-between max-w-[1180px] mx-auto my-10">

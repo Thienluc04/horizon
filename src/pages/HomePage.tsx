@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export interface HomePageProps {}
 
-export default function HomePage(props: HomePageProps) {
+export default function HomePage({}: HomePageProps) {
   const listOffers = [
     {
       url: "/images/watch-offer.png",

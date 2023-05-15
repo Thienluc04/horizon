@@ -1,13 +1,20 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.scss";
-import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import { history, store } from "app/store.ts";
+import { HistoryRouter as Router } from "redux-first-history/rr6";
+import { CookiesProvider } from "react-cookie";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <BrowserRouter>
-    <ToastContainer bodyClassName={"hidden lg:block"}></ToastContainer>
-    <App />
-  </BrowserRouter>
+  <Provider store={store}>
+    <Router history={history}>
+      <CookiesProvider>
+        <ToastContainer bodyClassName={"hidden lg:block"}></ToastContainer>
+        <App />
+      </CookiesProvider>
+    </Router>
+  </Provider>
 );

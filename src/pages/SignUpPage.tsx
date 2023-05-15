@@ -3,7 +3,7 @@ import { Input } from "components/input";
 import { Label } from "components/label";
 import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
@@ -22,7 +22,7 @@ const schema = yup.object({
     .min(8, "The password must be more than 8 characters"),
 });
 
-export default function RegisterPage(props: RegisterPageProps) {
+export default function RegisterPage({}: RegisterPageProps) {
   const {
     control,
     handleSubmit,

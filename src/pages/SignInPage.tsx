@@ -1,10 +1,19 @@
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import axios from "axios";
 import { Button } from "components/button";
 import { Input } from "components/input";
 import { Label } from "components/label";
+import {
+  authAction,
+  selectAuthLoading,
+  selectCurrentUser,
+  selectIsLoggedIn,
+} from "features/auth/authSlice";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 
@@ -15,23 +24,29 @@ const schema = yup.object({
     .string()
     .email("Please enter a valid email")
     .required("Please enter your email"),
-  password: yup
-    .string()
-    .required("Please enter your password")
-    .min(8, "The password must be more than 8 characters"),
+  password: yup.string().required("Please enter your password"),
+  // .min(8, "The password must be more than 8 characters"),
 });
 
-export default function SignInPage(props: SignInPageProps) {
+export default function SignInPage({}: SignInPageProps) {
   const {
     control,
     handleSubmit,
-    formState: { isValid, isSubmitting, errors },
+    formState: { isValid, errors },
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(schema),
   });
 
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [passwordShow, setPasswordShow] = useState<boolean>(false);
+  const [cookies, setCookie] = useCookies(["currentUser"]);
+
+  const currentUser = useAppSelector(selectCurrentUser);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const loading = useAppSelector(selectAuthLoading);
 
   useEffect(() => {
     if (errors) {
@@ -46,9 +61,26 @@ export default function SignInPage(props: SignInPageProps) {
     document.title = "Login";
   }, []);
 
-  const handleSignIn: SubmitHandler<FieldValues> = (values) => {
+  useEffect(() => {
+    if (isLoggedIn) {
+      const date = new Date();
+      date.setDate(date.getDate() + 1);
+      setCookie("currentUser", currentUser && currentUser, {
+        expires: date,
+      });
+      navigate("/");
+      toast.success("Login success");
+    }
+  }, [isLoggedIn]);
+
+  const handleSignIn: SubmitHandler<FieldValues> = async (values) => {
     if (!isValid) return;
-    console.log(values);
+    await dispatch(
+      authAction.authLogin({
+        email: values.email,
+        password: values.password,
+      })
+    );
   };
 
   return (
@@ -92,7 +124,7 @@ export default function SignInPage(props: SignInPageProps) {
             </Link>
           </p>
           <Button
-            isLoading={isSubmitting}
+            isLoading={loading}
             type="submit"
             className="w-[150px] mx-auto"
           >

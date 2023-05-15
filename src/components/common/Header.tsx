@@ -2,15 +2,24 @@ import { Button } from "components/button";
 import { FormEvent, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Navigation } from ".";
+import { useCookies } from "react-cookie";
+import { useAppDispatch } from "app/hooks";
+import { authAction } from "features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export interface HeaderProps {}
 
-export function Header(props: HeaderProps) {
+export function Header({}: HeaderProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const location = useLocation();
+  const dispatch = useAppDispatch();
+
+  const [cookies, setCookie, removeCookies] = useCookies(["currentUser"]);
+
+  const currentUser = cookies.currentUser;
 
   const hanldeOpenMenu = () => {
     if (menuRef.current && labelRef.current) {
@@ -41,6 +50,12 @@ export function Header(props: HeaderProps) {
     console.log(inputRef.current);
   };
 
+  const handleLogOut = () => {
+    dispatch(authAction.authLogOut);
+    removeCookies("currentUser");
+    toast.success("Log out success");
+  };
+
   return (
     <>
       <div
@@ -49,18 +64,18 @@ export function Header(props: HeaderProps) {
       >
         <div className="flex flex-col p-5">
           <div className="border-b border-primary py-3 w-full flex justify-between">
-            {/* {currentUser ? (
-              <p>Hello {currentUser.displayName}</p>
-            ) : ( */}
-            <div className="flex gap-3">
-              <Link to={"/login"} className="text-primary">
-                Login
-              </Link>
-              <Link to={"/register"} className="text-dark">
-                Register
-              </Link>
-            </div>
-            {/* )} */}
+            {currentUser ? (
+              <p>Hello {currentUser.username}</p>
+            ) : (
+              <div className="flex gap-3">
+                <Link to={"/login"} className="text-primary">
+                  Login
+                </Link>
+                <Link to={"/register"} className="text-dark">
+                  Register
+                </Link>
+              </div>
+            )}
             <span
               className="text-primary block ml-auto"
               onClick={handleCloseMenu}
@@ -211,24 +226,24 @@ export function Header(props: HeaderProps) {
           </form>
         </div>
         <div className="flex items-center gap-3">
-          {/* {currentUser ? (
+          {currentUser ? (
             <>
               <p className="hidden xl:block">
                 Hello{" "}
-                <span className="text-primary">{currentUser.displayName}</span>
+                <span className="text-primary">{currentUser.username}</span>
               </p>
               <Link
                 to={"/cart"}
                 className="flex flex-col items-center gap-1 relative"
               >
                 <div className="absolute top-[-15%] right-0 h-4 w-4 bg-red text-white flex justify-center items-center rounded-lg text-sm">
-                  {cartLength}
+                  {/* {cartLength} */ 0}
                 </div>
                 <img src="/images/cart-icon.svg" alt="" />
                 <p className="text-gray5 text-xs">My cart</p>
               </Link>
               <div
-                onClick={() => handleSignOut()}
+                onClick={() => handleLogOut()}
                 className="cursor-pointer flex flex-col items-center gap-1"
               >
                 <span>
@@ -246,14 +261,14 @@ export function Header(props: HeaderProps) {
                 <p className="text-gray5 text-xs">Log out</p>
               </div>
             </>
-          ) : ( */}
-          <>
-            <Button to="/login">Login</Button>
-            <Button to="/register" kind="secondary">
-              Register
-            </Button>
-          </>
-          {/* )} */}
+          ) : (
+            <>
+              <Button to="/login">Login</Button>
+              <Button to="/register" kind="secondary">
+                Register
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <div className="xl:hidden flex items-center gap-2 mx-5 h-10 border border-gray3 bg-[#F7FAFC] rounded-md p-2">

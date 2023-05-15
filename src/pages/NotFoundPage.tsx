@@ -1,7 +1,5 @@
-import * as React from "react";
-
 export interface NotFountPageProps {}
 
-export default function NotFountPage(props: NotFountPageProps) {
+export default function NotFountPage({}: NotFountPageProps) {
   return <div>Not Found</div>;
 }
