@@ -1,12 +1,11 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import axios from "axios";
 import { Button } from "components/button";
 import { Input } from "components/input";
 import { Label } from "components/label";
 import {
   authAction,
-  selectAuthLoading,
+  selectAuthLoadingLogin,
   selectCurrentUser,
   selectIsLoggedIn,
 } from "features/auth/authSlice";
@@ -16,16 +15,16 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import NotFountPage from "./NotFoundPage";
 
 export interface SignInPageProps {}
 
 const schema = yup.object({
-  email: yup
+  username: yup.string().required("Please enter your username"),
+  password: yup
     .string()
-    .email("Please enter a valid email")
-    .required("Please enter your email"),
-  password: yup.string().required("Please enter your password"),
-  // .min(8, "The password must be more than 8 characters"),
+    .required("Please enter your password")
+    .min(8, "The password must be more than 8 characters"),
 });
 
 export default function SignInPage({}: SignInPageProps) {
@@ -42,11 +41,11 @@ export default function SignInPage({}: SignInPageProps) {
   const navigate = useNavigate();
 
   const [passwordShow, setPasswordShow] = useState<boolean>(false);
-  const [cookies, setCookie] = useCookies(["currentUser"]);
+  const [cookie, setCookie] = useCookies(["currentUser"]);
 
   const currentUser = useAppSelector(selectCurrentUser);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
-  const loading = useAppSelector(selectAuthLoading);
+  const loading = useAppSelector(selectAuthLoadingLogin);
 
   useEffect(() => {
     if (errors) {
@@ -62,14 +61,13 @@ export default function SignInPage({}: SignInPageProps) {
   }, []);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !cookie.currentUser) {
       const date = new Date();
       date.setDate(date.getDate() + 1);
       setCookie("currentUser", currentUser && currentUser, {
         expires: date,
       });
       navigate("/");
-      toast.success("Login success");
     }
   }, [isLoggedIn]);
 
@@ -77,15 +75,17 @@ export default function SignInPage({}: SignInPageProps) {
     if (!isValid) return;
     await dispatch(
       authAction.authLogin({
-        email: values.email,
+        username: values.username,
         password: values.password,
       })
     );
   };
 
+  if (cookie.currentUser) return <NotFountPage></NotFountPage>;
+
   return (
     <>
-      <div className="mx-auto md:w-[500px] w-[350px] pt-[150px] md:px-0 px-3">
+      <div className="mx-auto md:w-[500px] w-[350px] py-[100px] xl:py-[150px] md:px-0 px-3">
         <div className="text-center mb-5 flex justify-center">
           <Link to={"/"}>
             <img src="/logo.png" alt="" />
@@ -97,12 +97,12 @@ export default function SignInPage({}: SignInPageProps) {
           className="flex flex-col gap-10"
         >
           <div className="flex flex-col gap-3">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="username">Username</Label>
             <Input
               control={control}
-              name="email"
-              placeholder="Please enter your email"
-              type={"email"}
+              name="username"
+              placeholder="Please enter your username"
+              type="text"
             ></Input>
           </div>
           <div className="flex flex-col gap-3">

@@ -1,27 +1,39 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import authApi from "api/authApi";
-import { Login, LoginResponse, Register } from "models";
+import { Login, LoginResponse, Register, RegisterResponse } from "models";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { authAction } from "./authSlice";
-import { STATUS_OK } from "utils/constant";
 import { toast } from "react-toastify";
+import { push } from "redux-first-history";
+import { status } from "utils/constant";
 
 function* handleAuthLogin(action: PayloadAction<Login>) {
   const response: LoginResponse = yield call(authApi.login, action.payload);
-  if (response.data.id) {
+  if (response.data?.username) {
     yield put(authAction.authLoginSuccess(response.data));
+    yield put(push("/"));
+    toast.success("Login success");
   } else {
     yield put(authAction.authLoginFailed());
-    toast.error("Email or password maybe wrong");
+    toast.error("Username or password maybe wrong");
   }
 }
 
 function* handleAuthRegister(action: PayloadAction<Register>) {
-  const response: number = yield call(authApi.register, action.payload);
-  if (response === STATUS_OK) {
-    console.log("Register success");
-  } else {
-    console.log("Register failed");
+  const response: RegisterResponse = yield call(
+    authApi.register,
+    action.payload
+  );
+  if (response.data === status.OK) {
+    yield put(authAction.authRegisterSuccess);
+    yield put(push("/login"));
+    toast.success("Your account has just been created");
+  } else if (response.data === status.EXIST) {
+    yield put(authAction.authRegisterFailed);
+    toast.error("Your account already exists");
+  } else if (response.data === status.ERROR) {
+    yield put(authAction.authRegisterFailed);
+    toast.error("Can't create your account, please enter again");
   }
 }
 

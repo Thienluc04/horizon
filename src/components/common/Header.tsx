@@ -5,7 +5,6 @@ import { Navigation } from ".";
 import { useCookies } from "react-cookie";
 import { useAppDispatch } from "app/hooks";
 import { authAction } from "features/auth/authSlice";
-import { toast } from "react-toastify";
 
 export interface HeaderProps {}
 
@@ -17,7 +16,7 @@ export function Header({}: HeaderProps) {
   const location = useLocation();
   const dispatch = useAppDispatch();
 
-  const [cookies, setCookie, removeCookies] = useCookies(["currentUser"]);
+  const [cookies, _, removeCookies] = useCookies(["currentUser"]);
 
   const currentUser = cookies.currentUser;
 
@@ -50,14 +49,15 @@ export function Header({}: HeaderProps) {
     console.log(inputRef.current);
   };
 
-  const handleLogOut = () => {
-    dispatch(authAction.authLogOut);
+  const handleLogOut = async () => {
+    await dispatch(authAction.authLogOut);
     removeCookies("currentUser");
-    toast.success("Log out success");
+    document.location.reload();
   };
 
   return (
     <>
+      {/* Mobile */}
       <div
         ref={menuRef}
         className="fixed xl:hidden top-0 left-0 bottom-0 w-[300px] bg-white z-10 hideMenu"
@@ -183,6 +183,7 @@ export function Header({}: HeaderProps) {
         onClick={handleCloseMenu}
         className=" absolute inset-0 bg-dark z-[5] hideOverlay"
       ></div>
+
       <div className="max-w-[1180px] mx-auto flex justify-between items-center py-3 max-lg:px-5">
         <div className="flex items-center gap-2">
           <div className="xl:hidden" onClick={hanldeOpenMenu}>
@@ -228,20 +229,31 @@ export function Header({}: HeaderProps) {
         <div className="flex items-center gap-3">
           {currentUser ? (
             <>
-              <p className="hidden xl:block">
-                Hello{" "}
-                <span className="text-primary">{currentUser.username}</span>
-              </p>
               <Link
+                to={"/profile"}
+                className="flex flex-col items-center gap-1 relative"
+              >
+                <img
+                  src={`${
+                    currentUser.urlAvata.length > 0
+                      ? currentUser.urlAvata
+                      : "/profile_default.png"
+                  }`}
+                  className="rounded-full w-[22px] h-[22px]"
+                  alt=""
+                />
+                <p className="text-gray5 text-xs">{currentUser.username}</p>
+              </Link>
+              {/* <Link
                 to={"/cart"}
                 className="flex flex-col items-center gap-1 relative"
               >
                 <div className="absolute top-[-15%] right-0 h-4 w-4 bg-red text-white flex justify-center items-center rounded-lg text-sm">
-                  {/* {cartLength} */ 0}
+                  0
                 </div>
                 <img src="/images/cart-icon.svg" alt="" />
                 <p className="text-gray5 text-xs">My cart</p>
-              </Link>
+              </Link> */}
               <div
                 onClick={() => handleLogOut()}
                 className="cursor-pointer flex flex-col items-center gap-1"

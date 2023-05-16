@@ -1,11 +1,34 @@
-import { ChangePass, User } from "models";
+import { ChangePass, Profile, ProfileResponse } from "models";
 import axiosClient from "./axiosClient";
 
 const userApi = {
-  getProfile(id: number): Promise<User> {
-    const url = "/auth/login";
-    return axiosClient.post(url, {
-      idUser: id,
+  getProfile(username: string): Promise<ProfileResponse> {
+    const url = "/getProfile.php";
+    return axiosClient({
+      method: "get",
+      url,
+      params: {
+        username,
+      },
+    });
+  },
+  updateProfile(values: Profile): Promise<number> {
+    const url = "/updateProfile.php";
+    return axiosClient({
+      method: "post",
+      url,
+      data: {
+        username: values.username,
+        fullname: values.fullname,
+        email: values.email,
+        idGender: values.idGender,
+        DateOfBirth: values.DateOfBith,
+        PhoneNumber: values.PhoneNumber,
+        urlAvata: values.urlAvata,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
   },
 

@@ -1,28 +1,29 @@
 export interface Register {
   username: string;
-  fullName: string;
+  fullname: string;
   email: string;
   password: string;
+  idGender: string;
+  DateOfBirth: string;
+  PhoneNumber: string;
+  urlAvata: string;
 }
 
 export interface Login {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface CurrentUser {
-  id: number;
+  idRole: number;
   username: string;
-  email: string;
-  fullname: string;
+  urlAvata: string;
 }
 
 export interface LoginResponse {
   data: CurrentUser;
 }
 
-export interface ChangePass {
-  oldPass: string;
-  newPass: string;
-  reNewPass: string;
+export interface RegisterResponse {
+  data: number;
 }

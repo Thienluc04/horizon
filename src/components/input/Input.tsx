@@ -10,6 +10,7 @@ export interface InputProps {
   passwordShow?: boolean;
   setPasswordShow?: Dispatch<SetStateAction<boolean>>;
   hasEye?: boolean;
+  disabled?: boolean;
 }
 
 export function Input({
@@ -21,6 +22,7 @@ export function Input({
   passwordShow,
   setPasswordShow = () => {},
   hasEye,
+  disabled = false,
   ...props
 }: PropsWithChildren<InputProps>) {
   const { field } = useController({
@@ -35,7 +37,10 @@ export function Input({
         id={name}
         type={type}
         placeholder={placeholder}
-        className={`border border-gray4 px-3 py-3 rounded-lg w-full ${className}`}
+        className={`border border-gray4 px-3 py-3 rounded-lg w-full ${
+          disabled && "bg-gray3"
+        } ${className}`}
+        disabled={disabled}
         {...field}
         {...props}
       />

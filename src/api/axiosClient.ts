@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
 
 const axiosClient = axios.create({
-  baseURL: "https://horizon-server.fun",
+  baseURL: "https://horizon-server.fun/api",
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",

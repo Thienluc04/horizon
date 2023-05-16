@@ -7,10 +7,14 @@ import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { authAction, selectAuthLoadingRegister } from "features/auth/authSlice";
+import { gender } from "utils/constant";
 
 export interface RegisterPageProps {}
 
 const schema = yup.object({
+  fullname: yup.string().required("Please enter your fullname"),
   username: yup.string().required("Please enter your username"),
   email: yup
     .string()
@@ -20,13 +24,17 @@ const schema = yup.object({
     .string()
     .required("Please enter your password")
     .min(8, "The password must be more than 8 characters"),
+  rePassword: yup
+    .string()
+    .required("Please enter your password again")
+    .min(8, "The password must be more than 8 characters"),
 });
 
 export default function RegisterPage({}: RegisterPageProps) {
   const {
     control,
     handleSubmit,
-    formState: { isValid, isSubmitting, errors },
+    formState: { isValid, errors },
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(schema),
@@ -46,15 +54,35 @@ export default function RegisterPage({}: RegisterPageProps) {
   }, [errors]);
 
   const [passwordShow, setPasswordShow] = useState<boolean>(false);
+  const [rePasswordShow, setRePasswordShow] = useState<boolean>(false);
+
+  const dispatch = useAppDispatch();
+
+  const loading = useAppSelector(selectAuthLoadingRegister);
 
   const handleSignUp: SubmitHandler<FieldValues> = async (values) => {
     if (!isValid) return;
-    console.log(values);
+    if (values.password === values.rePassword) {
+      await dispatch(
+        authAction.authRegister({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+          fullname: values.fullname,
+          idGender: gender.OTHER,
+          DateOfBirth: "2000-01-01",
+          PhoneNumber: "",
+          urlAvata: "",
+        })
+      );
+    } else {
+      toast.error("Password and rePassword must be the same");
+    }
   };
 
   return (
     <>
-      <div className="mx-auto md:w-[500px] w-[350px] pt-[150px] md:px-0 px-3">
+      <div className="mx-auto md:w-[500px] w-[350px] py-5 xl:py-[100px] md:px-0 px-3">
         <div className="text-center mb-5 flex justify-center">
           <Link to={"/"}>
             <img src="/logo.png" alt="" />
@@ -65,6 +93,15 @@ export default function RegisterPage({}: RegisterPageProps) {
           onSubmit={handleSubmit(handleSignUp)}
           className="flex flex-col gap-10"
         >
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="fullname">Full Name</Label>
+            <Input
+              control={control}
+              name="fullname"
+              placeholder="Please enter your fullname"
+              type="text"
+            ></Input>
+          </div>
           <div className="flex flex-col gap-3">
             <Label htmlFor="username">Username</Label>
             <Input
@@ -95,6 +132,18 @@ export default function RegisterPage({}: RegisterPageProps) {
               hasEye
             ></Input>
           </div>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="rePassword">Retype Password</Label>
+            <Input
+              control={control}
+              name="rePassword"
+              placeholder="Please enter your password again"
+              type={rePasswordShow ? "text" : "password"}
+              passwordShow={rePasswordShow}
+              setPasswordShow={setRePasswordShow}
+              hasEye
+            ></Input>
+          </div>
           <p>
             Do you already have an account?{" "}
             <Link to={"/login"} className="text-primary">
@@ -102,7 +151,7 @@ export default function RegisterPage({}: RegisterPageProps) {
             </Link>
           </p>
           <Button
-            isLoading={isSubmitting}
+            isLoading={loading}
             type="submit"
             className="w-[150px] mx-auto"
           >
