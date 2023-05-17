@@ -67,11 +67,11 @@ export default function ChangePassPage({}: ChangePassPageProps) {
   if (!currentUser) return <NotFountPage></NotFountPage>;
 
   return (
-    <div className="max-w-[1180px] mx-auto py-10">
-      <form onSubmit={handleSubmit(handleChangePassword)} className="flex-1">
+    <div className="max-w-[1180px] mx-auto pt-10 pb-[130px] xl:px-0 px-4">
+      <form onSubmit={handleSubmit(handleChangePassword)}>
         <h1 className="text-2xl">Change password</h1>
-        <div className="mt-10 flex items-center justify-center flex-wrap gap-10">
-          <div className="flex gap-3 flex-col w-1/3">
+        <div className="mt-10 flex xl:flex-row flex-col items-center justify-center flex-wrap gap-10">
+          <div className="flex gap-3 flex-col xl:w-1/3 w-full">
             <Label htmlFor="oldPass">Old Password</Label>
             <Input
               control={control}
@@ -80,7 +80,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               type="password"
             ></Input>
           </div>
-          <div className="flex gap-3 flex-col w-1/3">
+          <div className="flex gap-3 flex-col xl:w-1/3 w-full">
             <Label htmlFor="newPass">New Password</Label>
             <Input
               control={control}
@@ -89,7 +89,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               type="password"
             ></Input>
           </div>
-          <div className="flex gap-3 flex-col w-1/3">
+          <div className="flex gap-3 flex-col xl:w-1/3 w-full">
             <Label htmlFor="reNewPass">Retype new password</Label>
             <Input
               control={control}

@@ -124,7 +124,7 @@ export default function ProfilePage(_: ProfilePageProps) {
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   handleSelectImage(e)
                 }
-                className="rounded-full w-[200px] !h-[200px] mx-auto"
+                className="rounded-full w-[100px] !h-[100px] xl:w-[200px] xl:!h-[200px] mx-auto"
               ></ImageUpload>
             </div>
           </div>

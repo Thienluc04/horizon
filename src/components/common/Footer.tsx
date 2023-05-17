@@ -4,7 +4,7 @@ export interface FooterProps {}
 
 export function Footer({}: FooterProps) {
   return (
-    <div>
+    <>
       <div className="xl:flex hidden justify-between max-w-[1180px] mx-auto my-10">
         <div className="flex flex-col gap-4">
           <Link to={"/"}>
@@ -75,6 +75,6 @@ export function Footer({}: FooterProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -42,11 +42,11 @@ export function ImageUpload({
         {!imgUrl && !loading && (
           <div>
             <img
-              className="max-w-[80px] mb-5 mx-auto"
+              className="xl:max-w-[80px] max-w-[40px] xl:mb-5 mx-auto"
               src="/img-upload.png"
               alt=""
             />
-            <p className="font-semibold">Choose photo</p>
+            <p className="font-semibold xl:block hidden">Choose photo</p>
           </div>
         )}
         {loading && (
@@ -57,7 +57,7 @@ export function ImageUpload({
         <div
           onClick={removeImage}
           className="cursor-pointer absolute top-2/4 translate-y-[-50%] left-2/4 translate-x-[-50%] z-10 lg:opacity-0 lg:invisible lg:group-hover:opacity-100 lg:group-hover:visible bg-white
-              text-rose-500 p-5   rounded-full transition-all"
+              text-rose-500 xl:p-5 p-3 rounded-full transition-all"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
