@@ -1,4 +1,4 @@
-import { ChangePass, Profile, ProfileResponse } from "models";
+import { ChangePass, Profile, ProfileResponse, Response } from "models";
 import axiosClient from "./axiosClient";
 
 const userApi = {
@@ -32,12 +32,12 @@ const userApi = {
     });
   },
 
-  changePass(value: ChangePass): Promise<number> {
-    const url = "/api/changepass";
+  changePass(value: ChangePass): Promise<Response<number>> {
+    const url = "/changepass.php";
     return axiosClient.post(url, {
+      username: value.username,
       oldPass: value.oldPass,
       newPass: value.newPass,
-      reNewPass: value.reNewPass,
     });
   },
 };

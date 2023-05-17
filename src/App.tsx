@@ -6,6 +6,7 @@ import NotFountPage from "pages/NotFoundPage";
 import SignInPage from "pages/SignInPage";
 import SignUpPage from "pages/SignUpPage";
 import ProfilePage from "pages/ProfilePage";
+import ChangePassPage from "pages/ChangePassPage";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
         <Route element={<MainLayout></MainLayout>}>
           <Route path="/" element={<HomePage></HomePage>}></Route>
           <Route path="/profile" element={<ProfilePage></ProfilePage>}></Route>
+          <Route
+            path="/profile/password"
+            element={<ChangePassPage></ChangePassPage>}
+          ></Route>
         </Route>
       </Routes>
     </>

@@ -2,7 +2,7 @@ export interface NotFountPageProps {}
 
 export default function NotFountPage({}: NotFountPageProps) {
   return (
-    <div className="max-w-[1180px] mx-auto py-10">
+    <div className="max-w-[1180px] mx-auto my-10">
       <img
         src="/not-found.png"
         width={200}

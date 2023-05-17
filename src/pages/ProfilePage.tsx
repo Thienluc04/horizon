@@ -14,6 +14,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import axios from "axios";
 import userApi from "api/userApi";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 export interface ProfilePageProps {}
 
@@ -32,7 +33,7 @@ export default function ProfilePage(_: ProfilePageProps) {
     watch,
     setValue,
     reset,
-    formState: {},
+    formState: { isValid, isSubmitting },
   } = useForm({
     mode: "onSubmit",
     resolver: yupResolver(schema),
@@ -85,6 +86,7 @@ export default function ProfilePage(_: ProfilePageProps) {
   if (!cookies.currentUser) return <NotFountPage></NotFountPage>;
 
   const handleUpdateProfile: SubmitHandler<FieldValues> = async (values) => {
+    if (!isValid) return;
     setValue("urlAvata", imgUrl);
     const response: any = await userApi.updateProfile({
       username: currentUser.username,
@@ -110,7 +112,6 @@ export default function ProfilePage(_: ProfilePageProps) {
 
   return (
     <div className="max-w-[1180px] mx-auto py-10">
-      <input type="text" onChange={(e) => handleSelectImage(e)} />
       <form onSubmit={handleSubmit(handleUpdateProfile)} className="flex-1">
         <h1 className="px-4 text-2xl">Profile user</h1>
         <div className="flex flex-col gap-5 lg:gap-10 lg:mt-10 mt-5 px-4">
@@ -213,9 +214,14 @@ export default function ProfilePage(_: ProfilePageProps) {
               ></Input>
             </div>
           </div>
+          <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-10">
+            <Link to={"/profile/password"} className="text-primary">
+              Change your password
+            </Link>
+          </div>
         </div>
         <div className="mt-10 lg:mt-[60px] flex justify-center">
-          <Button type="submit" kind="primary">
+          <Button isLoading={isSubmitting} type="submit" kind="primary">
             Update profile
           </Button>
         </div>

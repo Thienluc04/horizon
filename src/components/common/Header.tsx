@@ -1,6 +1,6 @@
 import { Button } from "components/button";
 import { FormEvent, useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Navigation } from ".";
 import { useCookies } from "react-cookie";
 import { useAppDispatch } from "app/hooks";
@@ -15,8 +15,9 @@ export function Header({}: HeaderProps) {
 
   const location = useLocation();
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const [cookies, _, removeCookies] = useCookies(["currentUser"]);
+  const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
 
   const currentUser = cookies.currentUser;
 
@@ -50,8 +51,9 @@ export function Header({}: HeaderProps) {
   };
 
   const handleLogOut = async () => {
-    await dispatch(authAction.authLogOut);
+    dispatch(authAction.authLogOut);
     removeCookies("currentUser");
+    navigate("/");
     document.location.reload();
   };
 

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "app/store";
-import { User } from "models";
+import { ChangePass, User } from "models";
 
 export interface UserState {
   loading: boolean;
@@ -26,8 +26,9 @@ const userSlice = createSlice({
     fetchUserListFailed(state) {
       state.loading = false;
     },
-    fetchProfileUser() {},
-    fetchChangePass() {},
+    fetchChangePass(state, _: PayloadAction<ChangePass>) {
+      state.loading = false;
+    },
   },
 });
 

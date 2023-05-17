@@ -12,9 +12,9 @@ export interface User {
 }
 
 export interface ChangePass {
+  username: string;
   oldPass: string;
   newPass: string;
-  reNewPass: string;
 }
 
 export interface Profile {
