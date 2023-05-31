@@ -7,7 +7,6 @@ import { useAppDispatch } from 'app/hooks';
 import { authAction } from 'features/auth/authSlice';
 import { CurrentUser } from 'models';
 import { role } from 'utils/constant';
-import axios from 'axios';
 
 export interface HeaderProps {}
 
@@ -257,16 +256,18 @@ export function Header({}: HeaderProps) {
                 </div>
                 <div
                   ref={dropdownRef}
-                  className="hidden absolute top-[100%] rounded-lg left-[50%] p-3 -translate-x-2/4 bg-white w-[100px] border border-gray-300 flex flex-col list-none gap-2"
+                  className="hidden absolute top-[100%] rounded-lg left-[50%] p-3 -translate-x-2/4 bg-white w-[100px] border border-gray-300 list-none"
                 >
-                  <li>
-                    <Link to={'/profile'}>Profile</Link>
-                  </li>
-                  {currentUser.idRole === role.ADMIN && (
+                  <div className="flex flex-col gap-2">
                     <li>
-                      <Link to={'/dashboard'}>Dasboard</Link>
+                      <Link to={'/profile'}>Profile</Link>
                     </li>
-                  )}
+                    {currentUser.idRole === role.ADMIN && (
+                      <li>
+                        <Link to={'/dashboard'}>Dasboard</Link>
+                      </li>
+                    )}
+                  </div>
                 </div>
               </div>
               {/* Cart */}

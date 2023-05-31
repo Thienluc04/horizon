@@ -15,13 +15,19 @@ export interface ChangePass {
   newPass: string;
 }
 
+export interface ChangeRole {
+  username: string;
+  idRole: string;
+}
+
 export interface Profile {
-  idGender: number;
+  idRole?: string;
+  idGender: string;
   username: string;
   fullname: string;
   email: string;
   DateOfBith: string;
-  PhoneNumber: number;
+  PhoneNumber: string;
   urlAvata: string;
 }
 

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { ChangePass, User } from 'models';
+import { ChangePass, ChangeRole, User } from 'models';
 
 export interface UserState {
   loading: boolean;
@@ -27,6 +27,9 @@ const userSlice = createSlice({
       state.loading = false;
     },
     fetchChangePass(state, _: PayloadAction<ChangePass>) {
+      state.loading = false;
+    },
+    fetchChangeRole(state, _: PayloadAction<ChangeRole>) {
       state.loading = false;
     },
     searchUser(state, _: PayloadAction<string>) {

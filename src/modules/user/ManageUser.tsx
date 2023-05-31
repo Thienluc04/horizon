@@ -99,7 +99,7 @@ export function ManageUser(_: ManageUserProps) {
           <h2 className="font-bold text-xl">All Users</h2>
           <div className="flex gap-4">
             <Link
-              to={'/dashboard/createUser'}
+              to={'/dashboard/users/createUser'}
               className="px-3 bg-dashboardPrimary text-white flex justify-center items-center rounded-lg"
             >
               Create User
@@ -239,7 +239,10 @@ export function ManageUser(_: ManageUserProps) {
                   </p>
                 </div>
                 <div className="py-4 px-2 w-[120px] flex gap-2">
-                  <Link to={''} className="py-1 px-2 border border-[#888] rounded-lg">
+                  <Link
+                    to={`/dashboard/users/${user.username}`}
+                    className="py-1 px-2 border border-[#888] rounded-lg"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"

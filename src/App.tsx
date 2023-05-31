@@ -8,7 +8,7 @@ import SignUpPage from 'pages/SignUpPage';
 import ProfilePage from 'pages/ProfilePage';
 import ChangePassPage from 'pages/ChangePassPage';
 import { DashboardHome } from 'modules/dashboard';
-import { CreateUser, ManageUser } from 'modules/user';
+import { ChangeRole, CreateUser, ManageUser } from 'modules/user';
 import { ManageOrder } from 'modules/order';
 import { ManageProduct } from 'modules/product';
 
@@ -29,7 +29,9 @@ function App() {
           <Route path="/dashboard/products" element={<ManageProduct></ManageProduct>}></Route>
           <Route path="/dashboard/orders" element={<ManageOrder></ManageOrder>}></Route>
           <Route path="/dashboard/users" element={<ManageUser></ManageUser>}></Route>
-          <Route path="/dashboard/createUser" element={<CreateUser></CreateUser>}></Route>
+
+          <Route path="/dashboard/users/createUser" element={<CreateUser></CreateUser>}></Route>
+          <Route path="/dashboard/users/:slug" element={<ChangeRole></ChangeRole>}></Route>
         </Route>
       </Routes>
     </>

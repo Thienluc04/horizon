@@ -1,22 +1,22 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Input } from "components/input";
-import { Label } from "components/label";
-import { useCookies } from "react-cookie";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import * as yup from "yup";
-import NotFountPage from "./NotFoundPage";
-import { Button } from "components/button";
-import { toast } from "react-toastify";
-import { useAppDispatch } from "app/hooks";
-import { userAction } from "features/user/userSlice";
-import { useEffect, useState } from "react";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Input } from 'components/input';
+import { Label } from 'components/label';
+import { useCookies } from 'react-cookie';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import NotFountPage from './NotFoundPage';
+import { Button } from 'components/button';
+import { toast } from 'react-toastify';
+import { useAppDispatch } from 'app/hooks';
+import { userAction } from 'features/user/userSlice';
+import { useEffect, useState } from 'react';
 
 export interface ChangePassPageProps {}
 
 const schema = yup.object({
-  oldPass: yup.string().required("Please enter your old password"),
-  newPass: yup.string().required("Please enter your new password"),
-  reNewPass: yup.string().required("Please retype your new password"),
+  oldPass: yup.string().required('Please enter your old password'),
+  newPass: yup.string().required('Please enter your new password'),
+  reNewPass: yup.string().required('Please retype your new password'),
 });
 
 export default function ChangePassPage({}: ChangePassPageProps) {
@@ -26,11 +26,11 @@ export default function ChangePassPage({}: ChangePassPageProps) {
     reset,
     formState: { isValid, isSubmitting, errors },
   } = useForm({
-    mode: "onSubmit",
+    mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
 
-  const [cookies] = useCookies(["currentUser"]);
+  const [cookies] = useCookies(['currentUser']);
   const dispatch = useAppDispatch();
 
   const [isOldPassShow, setIsOldPassShow] = useState<boolean>(false);
@@ -59,12 +59,12 @@ export default function ChangePassPage({}: ChangePassPageProps) {
         })
       );
       reset({
-        oldPass: "",
-        newPass: "",
-        reNewPass: "",
+        oldPass: '',
+        newPass: '',
+        reNewPass: '',
       });
     } else {
-      toast.error("New password and reNewPassword must be the same");
+      toast.error('New password and reNewPassword must be the same');
     }
   };
 
@@ -81,7 +81,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="oldPass"
               placeholder="Please enter your old password"
-              type={isOldPassShow ? "text" : "password"}
+              type={isOldPassShow ? 'text' : 'password'}
               passwordShow={isOldPassShow}
               setPasswordShow={setIsOldPassShow}
               hasEye
@@ -93,7 +93,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="newPass"
               placeholder="Please enter your new password"
-              type={isNewPassShow ? "text" : "password"}
+              type={isNewPassShow ? 'text' : 'password'}
               passwordShow={isNewPassShow}
               setPasswordShow={setIsNewPassShow}
               hasEye
@@ -105,7 +105,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="reNewPass"
               placeholder="Please retype your new password"
-              type={isReNewPassShow ? "text" : "password"}
+              type={isReNewPassShow ? 'text' : 'password'}
               passwordShow={isReNewPassShow}
               setPasswordShow={setIsReNewPassShow}
               hasEye
@@ -114,7 +114,7 @@ export default function ChangePassPage({}: ChangePassPageProps) {
         </div>
         <div className="mt-10 flex justify-center">
           <Button isLoading={isSubmitting} type="submit" kind="primary">
-            Update profile
+            Update password
           </Button>
         </div>
       </form>

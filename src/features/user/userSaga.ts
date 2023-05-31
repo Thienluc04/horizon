@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import userApi from 'api/userApi';
-import { ChangePass, Response, User } from 'models';
+import { ChangePass, ChangeRole, Response, User } from 'models';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { userAction } from './userSlice';
 import { status } from 'utils/constant';
@@ -14,6 +14,15 @@ function* handleChangePass(action: PayloadAction<ChangePass>) {
     toast.error('Field old password is wrong, please retype this field');
   } else if (response.data === status.ERROR) {
     toast.error('Change password failed');
+  }
+}
+
+function* handleChangeRole(action: PayloadAction<ChangeRole>) {
+  const response: Response<number> = yield call(userApi.changeRole, action.payload);
+  if (response.data === status.OK) {
+    toast.success('Change role user success');
+  } else if (response.data === status.ERROR || response.data === status.EXIST) {
+    toast.error('Something is wrong');
   }
 }
 
@@ -49,6 +58,7 @@ function* handleGetUserWithRole(action: PayloadAction<string>) {
 
 export default function* userSaga() {
   yield takeLatest(userAction.fetchChangePass.type, handleChangePass);
+  yield takeLatest(userAction.fetchChangeRole.type, handleChangeRole);
   yield takeLatest(userAction.fetchUserList.type, handleFetchUserList);
   yield takeLatest(userAction.searchUser.type, handleSearchUser);
   yield takeLatest(userAction.getUserWithGender.type, handleGetUserWithGender);

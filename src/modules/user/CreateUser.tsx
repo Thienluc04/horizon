@@ -1,15 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import authApi from 'api/authApi';
-import { useAppDispatch } from 'app/hooks';
 import { Button } from 'components/button';
 import { Radio } from 'components/checkbox';
 import { Input } from 'components/input';
 import { Label } from 'components/label';
-import { authAction } from 'features/auth/authSlice';
 import { useEffect } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { gender, role } from 'utils/constant';
+import { gender, role, status } from 'utils/constant';
 import * as yup from 'yup';
 
 export interface CreateUserProps {}
@@ -34,8 +32,6 @@ export function CreateUser(_: CreateUserProps) {
     resolver: yupResolver(schema),
   });
 
-  const dispatch = useAppDispatch();
-
   useEffect(() => {
     if (errors) {
       const error = Object.values(errors);
@@ -54,7 +50,7 @@ export function CreateUser(_: CreateUserProps) {
   const handleCreateUser: SubmitHandler<FieldValues> = async (values) => {
     if (!isValid) return;
     try {
-      const response = await authApi.register({
+      const response: any = await authApi.register({
         username: values.username,
         email: values.email,
         password: values.password,
@@ -65,7 +61,13 @@ export function CreateUser(_: CreateUserProps) {
         PhoneNumber: '',
         urlAvata: '',
       });
-      console.log('consthandleCreateUser:SubmitHandler<FieldValues>= ~ response:', response);
+      if (response.data === status.OK) {
+        toast.success('Account has just been created');
+      } else if (response.data === status.EXIST) {
+        toast.error('Account already exists');
+      } else if (response.data === status.ERROR) {
+        toast.error("Can't create this account, please enter again");
+      }
     } catch (error) {
       console.log(error);
     }
