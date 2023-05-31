@@ -47,3 +47,8 @@
   width: 1px;
   white-space: nowrap;
 }
+
+.hiddenScroll {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+}

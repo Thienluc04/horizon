@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { RootState } from "app/store";
-import { ChangePass, User } from "models";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { RootState } from 'app/store';
+import { ChangePass, User } from 'models';
 
 export interface UserState {
   loading: boolean;
@@ -13,7 +13,7 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState,
   reducers: {
     fetchUserList(state) {
@@ -28,6 +28,27 @@ const userSlice = createSlice({
     },
     fetchChangePass(state, _: PayloadAction<ChangePass>) {
       state.loading = false;
+    },
+    searchUser(state, _: PayloadAction<string>) {
+      state.loading = true;
+    },
+    searchUserSuccess(state, action: PayloadAction<User[]>) {
+      state.loading = false;
+      state.list = action.payload;
+    },
+    getUserWithGender(state, _: PayloadAction<string>) {
+      state.loading = true;
+    },
+    getUserWithGenderSuccess(state, action: PayloadAction<User[]>) {
+      state.loading = false;
+      state.list = action.payload;
+    },
+    getUserWithRole(state, _: PayloadAction<string>) {
+      state.loading = true;
+    },
+    getUserWithRoleSuccess(state, action: PayloadAction<User[]>) {
+      state.loading = false;
+      state.list = action.payload;
     },
   },
 });

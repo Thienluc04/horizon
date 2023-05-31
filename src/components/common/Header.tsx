@@ -1,10 +1,13 @@
-import { Button } from "components/button";
-import { FormEvent, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Navigation } from ".";
-import { useCookies } from "react-cookie";
-import { useAppDispatch } from "app/hooks";
-import { authAction } from "features/auth/authSlice";
+import { Button } from 'components/button';
+import { FormEvent, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Navigation } from '.';
+import { useCookies } from 'react-cookie';
+import { useAppDispatch } from 'app/hooks';
+import { authAction } from 'features/auth/authSlice';
+import { CurrentUser } from 'models';
+import { role } from 'utils/constant';
+import axios from 'axios';
 
 export interface HeaderProps {}
 
@@ -12,24 +15,25 @@ export function Header({}: HeaderProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const location = useLocation();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [cookies, setCookies, removeCookies] = useCookies(["currentUser"]);
+  const [cookies, , removeCookies] = useCookies(['currentUser']);
 
-  const currentUser = cookies.currentUser;
+  const currentUser: CurrentUser = cookies.currentUser;
 
   const hanldeOpenMenu = () => {
     if (menuRef.current && labelRef.current) {
       const menu = menuRef.current;
       const label = labelRef.current;
-      menu?.classList.remove("hideMenu");
-      label.classList.remove("hideOverlay");
-      menu?.classList.add("showMenu");
-      label.classList.add("showOverlay");
-      document.body.classList.add("overflow-hidden");
+      menu?.classList.remove('hideMenu');
+      label.classList.remove('hideOverlay');
+      menu?.classList.add('showMenu');
+      label.classList.add('showOverlay');
+      document.body.classList.add('overflow-hidden');
     }
   };
 
@@ -37,11 +41,11 @@ export function Header({}: HeaderProps) {
     if (menuRef.current && labelRef.current) {
       const menu = menuRef.current;
       const label = labelRef.current;
-      menu?.classList.remove("showMenu");
-      label.classList.remove("showOverlay");
-      menu?.classList.add("hideMenu");
-      label.classList.add("hideOverlay");
-      document.body.classList.remove("overflow-hidden");
+      menu?.classList.remove('showMenu');
+      label.classList.remove('showOverlay');
+      menu?.classList.add('hideMenu');
+      label.classList.add('hideOverlay');
+      document.body.classList.remove('overflow-hidden');
     }
   };
 
@@ -52,9 +56,15 @@ export function Header({}: HeaderProps) {
 
   const handleLogOut = async () => {
     dispatch(authAction.authLogOut);
-    removeCookies("currentUser");
-    navigate("/");
+    removeCookies('currentUser');
+    navigate('/');
     document.location.reload();
+  };
+
+  const handleShowDropMenu = async () => {
+    const dropdown = dropdownRef.current;
+
+    dropdown?.classList.toggle('hidden');
   };
 
   return (
@@ -70,18 +80,15 @@ export function Header({}: HeaderProps) {
               <p>Hello {currentUser.username}</p>
             ) : (
               <div className="flex gap-3">
-                <Link to={"/login"} className="text-primary">
+                <Link to={'/login'} className="text-primary">
                   Login
                 </Link>
-                <Link to={"/register"} className="text-dark">
+                <Link to={'/register'} className="text-dark">
                   Register
                 </Link>
               </div>
             )}
-            <span
-              className="text-primary block ml-auto"
-              onClick={handleCloseMenu}
-            >
+            <span className="text-primary block ml-auto" onClick={handleCloseMenu}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -90,20 +97,16 @@ export function Header({}: HeaderProps) {
                 stroke="currentColor"
                 className="w-6 h-6"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 18L18 6M6 6l12 12"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </span>
           </div>
           <div className="mt-5">
             <div className=" py-3 w-full">
               <Link
-                to={"/"}
+                to={'/'}
                 className={`flex gap-3 items-center ${
-                  location.pathname === "/" ? "text-primary" : "text-[#8b96a5]"
+                  location.pathname === '/' ? 'text-primary' : 'text-[#8b96a5]'
                 }`}
               >
                 <span>
@@ -125,11 +128,9 @@ export function Header({}: HeaderProps) {
             </div>
             <div className=" py-3 w-full">
               <Link
-                to={"/products"}
+                to={'/products'}
                 className={`flex gap-3 items-center ${
-                  location.pathname.includes("products")
-                    ? "text-primary"
-                    : "text-[#8b96a5]"
+                  location.pathname.includes('products') ? 'text-primary' : 'text-[#8b96a5]'
                 }`}
               >
                 <span>
@@ -151,11 +152,9 @@ export function Header({}: HeaderProps) {
             </div>
             <div className=" py-3 w-full">
               <Link
-                to={"/cart"}
+                to={'/cart'}
                 className={`flex gap-3 items-center ${
-                  location.pathname.includes("cart")
-                    ? "text-primary"
-                    : "text-[#8b96a5]"
+                  location.pathname.includes('cart') ? 'text-primary' : 'text-[#8b96a5]'
                 }`}
               >
                 <span>
@@ -204,15 +203,12 @@ export function Header({}: HeaderProps) {
               />
             </svg>
           </div>
-          <Link to={"/"}>
+          <Link to={'/'}>
             <img src="/logo.png" alt="" />
           </Link>
         </div>
         <div className=" h-10 xl:flex">
-          <form
-            onSubmit={(e) => hanldeSubmitSearch(e)}
-            className="xl:flex hidden"
-          >
+          <form onSubmit={(e) => hanldeSubmitSearch(e)} className="xl:flex hidden">
             <input
               type="text"
               className="min-w-[420px] h-full border-2 border-primary rounded-lg border-r-[1px] rounded-r-none p-2"
@@ -220,10 +216,7 @@ export function Header({}: HeaderProps) {
               ref={inputRef}
             />
 
-            <button
-              className="bg-primaryGradient px-6 text-white rounded-r-lg"
-              type="submit"
-            >
+            <button className="bg-primaryGradient px-6 text-white rounded-r-lg" type="submit">
               Search
             </button>
           </form>
@@ -231,21 +224,52 @@ export function Header({}: HeaderProps) {
         <div className="flex items-center gap-3">
           {currentUser ? (
             <>
-              <Link
-                to={"/profile"}
-                className="flex flex-col items-center gap-1 relative"
-              >
-                <img
-                  src={`${
-                    currentUser.urlAvata.length > 0
-                      ? currentUser.urlAvata
-                      : "/profile_default.png"
-                  }`}
-                  className="rounded-full w-[22px] h-[22px]"
-                  alt=""
-                />
-                <p className="text-gray5 text-xs">{currentUser.username}</p>
-              </Link>
+              <div className="relative cursor-pointer" onClick={handleShowDropMenu}>
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center gap-1 relative">
+                    <img
+                      src={`${
+                        currentUser.urlAvata.length > 0
+                          ? currentUser.urlAvata
+                          : '/profile_default.png'
+                      }`}
+                      className="rounded-full w-[22px] h-[22px]"
+                      alt=""
+                    />
+                    <p className="text-gray5 text-xs">{currentUser.username}</p>
+                  </div>
+                  <span className="-translate-y-2/4 -translate-x-2/4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 20 20"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-3 h-3"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <div
+                  ref={dropdownRef}
+                  className="hidden absolute top-[100%] rounded-lg left-[50%] p-3 -translate-x-2/4 bg-white w-[100px] border border-gray-300 flex flex-col list-none gap-2"
+                >
+                  <li>
+                    <Link to={'/profile'}>Profile</Link>
+                  </li>
+                  {currentUser.idRole === role.ADMIN && (
+                    <li>
+                      <Link to={'/dashboard'}>Dasboard</Link>
+                    </li>
+                  )}
+                </div>
+              </div>
+              {/* Cart */}
               {/* <Link
                 to={"/cart"}
                 className="flex flex-col items-center gap-1 relative"
@@ -300,11 +324,7 @@ export function Header({}: HeaderProps) {
             />
           </svg>
         </span>
-        <input
-          type="text"
-          className="bg-[#F7FAFC] max-w-full"
-          placeholder="Search"
-        />
+        <input type="text" className="bg-[#F7FAFC] max-w-full" placeholder="Search" />
       </div>
       <Navigation></Navigation>
     </>

@@ -9,7 +9,7 @@ import { Button } from "components/button";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "app/hooks";
 import { userAction } from "features/user/userSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export interface ChangePassPageProps {}
 
@@ -32,6 +32,10 @@ export default function ChangePassPage({}: ChangePassPageProps) {
 
   const [cookies] = useCookies(["currentUser"]);
   const dispatch = useAppDispatch();
+
+  const [isOldPassShow, setIsOldPassShow] = useState<boolean>(false);
+  const [isNewPassShow, setIsNewPassShow] = useState<boolean>(false);
+  const [isReNewPassShow, setIsReNewPassShow] = useState<boolean>(false);
 
   useEffect(() => {
     if (errors) {
@@ -77,7 +81,10 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="oldPass"
               placeholder="Please enter your old password"
-              type="password"
+              type={isOldPassShow ? "text" : "password"}
+              passwordShow={isOldPassShow}
+              setPasswordShow={setIsOldPassShow}
+              hasEye
             ></Input>
           </div>
           <div className="flex gap-3 flex-col xl:w-1/3 w-full">
@@ -86,7 +93,10 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="newPass"
               placeholder="Please enter your new password"
-              type="password"
+              type={isNewPassShow ? "text" : "password"}
+              passwordShow={isNewPassShow}
+              setPasswordShow={setIsNewPassShow}
+              hasEye
             ></Input>
           </div>
           <div className="flex gap-3 flex-col xl:w-1/3 w-full">
@@ -95,7 +105,10 @@ export default function ChangePassPage({}: ChangePassPageProps) {
               control={control}
               name="reNewPass"
               placeholder="Please retype your new password"
-              type="password"
+              type={isReNewPassShow ? "text" : "password"}
+              passwordShow={isReNewPassShow}
+              setPasswordShow={setIsReNewPassShow}
+              hasEye
             ></Input>
           </div>
         </div>

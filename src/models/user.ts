@@ -1,14 +1,12 @@
 export interface User {
-  id: number;
-  idRole: number;
-  idGender: number;
+  idRole: string;
+  idGender: string;
   username: string;
-  fullName: string;
+  fullname: string;
   password: string;
   email: string;
-  dateOfBith: string;
-  phoneNumber: number;
-  urlAvata: string;
+  DateOfBirth: string;
+  PhoneNumber: string;
 }
 
 export interface ChangePass {
@@ -29,4 +27,14 @@ export interface Profile {
 
 export interface ProfileResponse {
   data: Profile;
+}
+
+export interface Gender {
+  id: number;
+  name: string;
+}
+
+export interface Role {
+  id: number;
+  name: string;
 }

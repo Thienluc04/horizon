@@ -24,7 +24,7 @@ const schema = yup.object({
   password: yup
     .string()
     .required("Please enter your password")
-    .min(8, "The password must be more than 8 characters"),
+    .min(6, "The password must be more than 6 characters"),
 });
 
 export default function SignInPage({}: SignInPageProps) {

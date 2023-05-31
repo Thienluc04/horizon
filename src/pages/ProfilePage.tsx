@@ -1,29 +1,30 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Button } from "components/button";
-import { Input } from "components/input";
-import { Label } from "components/label";
-import { useCookies } from "react-cookie";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import * as yup from "yup";
-import NotFountPage from "./NotFoundPage";
-import { CurrentUser, ProfileResponse } from "models";
-import { Radio } from "components/checkbox";
-import { gender, imgbbAPI, status } from "utils/constant";
-import { ImageUpload } from "components/common/ImageUpload";
-import { ChangeEvent, useEffect, useState } from "react";
-import axios from "axios";
-import userApi from "api/userApi";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button } from 'components/button';
+import { Input } from 'components/input';
+import { Label } from 'components/label';
+import { useCookies } from 'react-cookie';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import NotFountPage from './NotFoundPage';
+import { CurrentUser, Profile, Response } from 'models';
+import { Radio } from 'components/checkbox';
+import { gender, imgbbAPI, status } from 'utils/constant';
+import { ImageUpload } from 'components/common/ImageUpload';
+import { ChangeEvent, useEffect, useState } from 'react';
+import axios from 'axios';
+import userApi from 'api/userApi';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 export interface ProfilePageProps {}
 
 const schema = yup.object({
-  //   username: yup.string().required("Please enter your username"),
-  //   password: yup
-  //     .string()
-  //     .required("Please enter your password")
-  //     .min(8, "The password must be more than 8 characters"),
+  fullname: yup.string().required('Please enter your fullname'),
+  username: yup.string().required('Please enter your username'),
+  email: yup.string().email('Please enter a valid email').required('Please enter your email'),
+  gender: yup.string().required('Please choose your gender'),
+  PhoneNumber: yup.string().required('Please choose your phone number'),
+  DateOfBirth: yup.string().required('Please enter your date'),
 });
 
 export default function ProfilePage(_: ProfilePageProps) {
@@ -33,46 +34,52 @@ export default function ProfilePage(_: ProfilePageProps) {
     watch,
     setValue,
     reset,
-    formState: { isValid, isSubmitting },
+    formState: { isValid, isSubmitting, errors },
   } = useForm({
-    mode: "onSubmit",
+    mode: 'onSubmit',
     resolver: yupResolver(schema),
   });
-
-  const [cookies, setCookies] = useCookies(["currentUser"]);
+  const [cookies, setCookies] = useCookies(['currentUser']);
 
   const currentUser: CurrentUser = cookies.currentUser;
 
-  const [imgUrl, setImgUrl] = useState("");
+  const [imgUrl, setImgUrl] = useState('');
   const [loadingImg, setLoadingImg] = useState(false);
 
   const handleRemoveImage = () => {
-    setImgUrl("");
-    setValue("urlAvata", "");
+    setImgUrl('');
+    setValue('urlAvata', '');
   };
 
   useEffect(() => {
     (async () => {
       if (currentUser) {
-        const response: ProfileResponse = await userApi.getProfile(
-          currentUser.username
-        );
+        const response: Response<Profile> = await userApi.getProfile(currentUser.username);
         reset(response.data);
         setImgUrl(response.data.urlAvata);
       }
     })();
   }, []);
 
+  useEffect(() => {
+    if (errors) {
+      const error = Object.values(errors);
+      const errorMessage: String | undefined = error[0]?.message?.toString();
+
+      toast.error(errorMessage);
+    }
+  }, [errors]);
+
   const handleSelectImage = async (e: any) => {
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    formData.append('image', e.target.files[0]);
     setLoadingImg(true);
     const response = await axios({
-      method: "post",
+      method: 'post',
       url: imgbbAPI,
       data: formData,
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
       },
     });
     if (response.data.data) {
@@ -81,13 +88,13 @@ export default function ProfilePage(_: ProfilePageProps) {
     }
   };
 
-  const watchGender = watch("idGender");
+  const watchGender = watch('idGender');
 
   if (!cookies.currentUser) return <NotFountPage></NotFountPage>;
 
   const handleUpdateProfile: SubmitHandler<FieldValues> = async (values) => {
     if (!isValid) return;
-    setValue("urlAvata", imgUrl);
+    setValue('urlAvata', imgUrl);
     const response: any = await userApi.updateProfile({
       username: currentUser.username,
       fullname: values.fullname,
@@ -99,14 +106,14 @@ export default function ProfilePage(_: ProfilePageProps) {
     });
 
     if (response.data === status.OK) {
-      toast.success("Update profile success");
-      setCookies("currentUser", {
+      toast.success('Update profile success');
+      setCookies('currentUser', {
         idRole: currentUser.idRole,
         urlAvata: values.urlAvata,
         username: currentUser.username,
       });
     } else if (response === status.ERROR) {
-      toast.error("Update profile error");
+      toast.error('Update profile error');
     }
   };
 
@@ -121,9 +128,7 @@ export default function ProfilePage(_: ProfilePageProps) {
                 imgUrl={imgUrl}
                 loading={loadingImg}
                 removeImage={handleRemoveImage}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  handleSelectImage(e)
-                }
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleSelectImage(e)}
                 className="rounded-full w-[100px] !h-[100px] xl:w-[200px] xl:!h-[200px] mx-auto"
               ></ImageUpload>
             </div>
@@ -215,7 +220,7 @@ export default function ProfilePage(_: ProfilePageProps) {
             </div>
           </div>
           <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-10">
-            <Link to={"/profile/password"} className="text-primary">
+            <Link to={'/profile/password'} className="text-primary">
               Change your password
             </Link>
           </div>

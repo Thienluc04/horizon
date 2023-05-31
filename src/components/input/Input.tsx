@@ -1,5 +1,5 @@
-import { Dispatch, PropsWithChildren, SetStateAction } from "react";
-import { Control, FieldValues, useController } from "react-hook-form";
+import { Dispatch, PropsWithChildren, SetStateAction } from 'react';
+import { Control, FieldValues, useController } from 'react-hook-form';
 
 export interface InputProps {
   control: Control<FieldValues, any>;
@@ -16,9 +16,9 @@ export interface InputProps {
 export function Input({
   control,
   name,
-  placeholder = "",
-  className = "",
-  type = "text",
+  placeholder = '',
+  className = '',
+  type = 'text',
   passwordShow,
   setPasswordShow = () => {},
   hasEye,
@@ -28,7 +28,7 @@ export function Input({
   const { field } = useController({
     name,
     control,
-    defaultValue: "",
+    defaultValue: '',
   });
 
   return (
@@ -38,7 +38,7 @@ export function Input({
         type={type}
         placeholder={placeholder}
         className={`border border-gray4 px-3 py-3 rounded-lg w-full ${
-          disabled && "bg-gray3"
+          disabled && 'bg-gray3'
         } ${className}`}
         disabled={disabled}
         {...field}

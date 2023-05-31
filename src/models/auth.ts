@@ -4,6 +4,7 @@ export interface Register {
   email: string;
   password: string;
   idGender: string;
+  idRole: string;
   DateOfBirth: string;
   PhoneNumber: string;
   urlAvata: string;
@@ -15,7 +16,7 @@ export interface Login {
 }
 
 export interface CurrentUser {
-  idRole: number;
+  idRole: string;
   username: string;
   urlAvata: string;
 }
