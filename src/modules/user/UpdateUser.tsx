@@ -11,9 +11,9 @@ import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import { role } from 'utils/constant';
 
-export interface ChangeRoleProps {}
+export interface UpdateUserProps {}
 
-export function ChangeRole(_: ChangeRoleProps) {
+export function UpdateUser(_: UpdateUserProps) {
   const {
     control,
     handleSubmit,
@@ -55,6 +55,12 @@ export function ChangeRole(_: ChangeRoleProps) {
     } catch (error) {}
   };
 
+  const handleResetPass = async () => {
+    if (slug) {
+      await dispatch(userAction.fetchResetPass(slug));
+    }
+  };
+
   return (
     <div className="p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
       <h1 className="text-2xl font-semibold leading-7">User {slug}</h1>
@@ -67,7 +73,7 @@ export function ChangeRole(_: ChangeRoleProps) {
       </div>
       <form onSubmit={handleSubmit(handleChangeRoleUser)} className="flex-1">
         <div className="flex flex-col gap-5 lg:gap-10 lg:mt-10 mt-5 px-4">
-          <div className="flex lg:flex-row flex-col items-center gap-5 lg:gap-10">
+          <div className="flex lg:flex-row flex-col items-end gap-5 lg:gap-10">
             <div className="flex-1 flex flex-col gap-3">
               <Label htmlFor="idRole">Role</Label>
               <div className="flex flex-wrap gap-5">
@@ -118,11 +124,32 @@ export function ChangeRole(_: ChangeRoleProps) {
                 </Radio>
               </div>
             </div>
+            <div className="flex-1 flex gap-2 items-center">
+              <Button onClick={handleResetPass} kind="dashboardSecondary">
+                Reset pass
+              </Button>
+              <span title='Password will be reset to "123456" '>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                  />
+                </svg>
+              </span>
+            </div>
           </div>
         </div>
         <div className="mt-10 lg:mt-[60px] flex justify-center">
           <Button isLoading={isSubmitting} type="submit" kind="dashboard">
-            Update Role
+            Update User
           </Button>
         </div>
       </form>

@@ -56,6 +56,15 @@ function* handleGetUserWithRole(action: PayloadAction<string>) {
   }
 }
 
+function* handleResetPass(action: PayloadAction<string>) {
+  const { data }: Response<number> = yield call(userApi.resetPass, action.payload);
+  if (data === status.OK) {
+    toast.success('Reset the password success');
+  } else if (data === status.ERROR) {
+    toast.error('Something is wrong !');
+  }
+}
+
 export default function* userSaga() {
   yield takeLatest(userAction.fetchChangePass.type, handleChangePass);
   yield takeLatest(userAction.fetchChangeRole.type, handleChangeRole);
@@ -63,4 +72,5 @@ export default function* userSaga() {
   yield takeLatest(userAction.searchUser.type, handleSearchUser);
   yield takeLatest(userAction.getUserWithGender.type, handleGetUserWithGender);
   yield takeLatest(userAction.getUserWithRole.type, handleGetUserWithRole);
+  yield takeLatest(userAction.fetchResetPass.type, handleResetPass);
 }

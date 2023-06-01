@@ -19,12 +19,12 @@ import { Link } from 'react-router-dom';
 export interface ProfilePageProps {}
 
 const schema = yup.object({
-  fullname: yup.string().required('Please enter your fullname'),
-  username: yup.string().required('Please enter your username'),
-  email: yup.string().email('Please enter a valid email').required('Please enter your email'),
-  gender: yup.string().required('Please choose your gender'),
-  PhoneNumber: yup.string().required('Please choose your phone number'),
-  DateOfBirth: yup.string().required('Please enter your date'),
+  // fullname: yup.string().required('Please enter your fullname'),
+  // username: yup.string().required('Please enter your username'),
+  // email: yup.string().email('Please enter a valid email').required('Please enter your email'),
+  // gender: yup.string().required('Please choose your gender'),
+  // PhoneNumber: yup.string().required('Please choose your phone number'),
+  // DateOfBirth: yup.string().required('Please enter your date'),
 });
 
 export default function ProfilePage(_: ProfilePageProps) {

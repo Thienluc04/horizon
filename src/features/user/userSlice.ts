@@ -32,6 +32,9 @@ const userSlice = createSlice({
     fetchChangeRole(state, _: PayloadAction<ChangeRole>) {
       state.loading = false;
     },
+    fetchResetPass(state, _: PayloadAction<string>) {
+      state.loading = false;
+    },
     searchUser(state, _: PayloadAction<string>) {
       state.loading = true;
     },

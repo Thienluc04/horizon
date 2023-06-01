@@ -49,6 +49,13 @@ const userApi = {
     });
   },
 
+  resetPass(username: string): Promise<Response<number>> {
+    const url = '/resetPass.php';
+    return axiosClient.post(url, {
+      username,
+    });
+  },
+
   getUsers(): Promise<Response<User[]>> {
     const url = '/getUser.php';
     return axiosClient.get(url);
