@@ -1,10 +1,10 @@
-import axios, { AxiosResponse, InternalAxiosRequestConfig } from "axios";
+import axios, { AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: "https://horizon-server.fun/api",
+  baseURL: 'https://horizon-server.fun/api',
   headers: {
-    "Content-Type": "application/json",
-    "Cache-Control": "no-cache",
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache',
   },
 });
 
@@ -25,7 +25,7 @@ axiosClient.interceptors.response.use(
   function (response: AxiosResponse) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    return response;
+    return response.data;
   },
   function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger

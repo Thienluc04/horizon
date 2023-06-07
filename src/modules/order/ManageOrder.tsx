@@ -39,8 +39,8 @@ export function ManageOrder(_: ManageOrderProps) {
               <p className="font-bold text-[#232321CC] text-center">Actions</p>
             </div>
           </div>
-          {new Array(5).fill(0).map(() => (
-            <div className="flex justify-between items-center">
+          {new Array(5).fill(0).map((_, index) => (
+            <div key={index} className="flex justify-between items-center">
               <div className="py-4 px-2 w-[180px]">
                 <p className="font-bold text-dashboardPrimary">Adidas Ultra boost</p>
               </div>

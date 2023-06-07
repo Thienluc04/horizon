@@ -3,6 +3,8 @@ export const status = {
   OK: 200,
   ERROR: 504,
   EXIST: 503,
+  NO_CONTENT: 204,
+  NOT_FOUND: 404,
 };
 
 // Gender
@@ -20,4 +22,7 @@ export const role = {
   CONTENT_CREATOR: '5',
 };
 
-export const imgbbAPI = 'https://api.imgbb.com/1/upload?key=9d2ea74138ace1fc2b50aa6656079f7b';
+export const active = {
+  PUBLIC: 1,
+  PRIVATE: 2,
+};

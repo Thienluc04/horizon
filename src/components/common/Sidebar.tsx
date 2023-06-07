@@ -68,6 +68,27 @@ const listPath = [
       </svg>
     ),
   },
+  {
+    id: 5,
+    name: 'Other',
+    path: '/dashboard/other',
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={1.5}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    ),
+  },
 ];
 
 export function Sidebar(_: SidebarProps) {
@@ -75,7 +96,7 @@ export function Sidebar(_: SidebarProps) {
 
   return (
     <div className="min-w-[300px] h-full py-8">
-      <Link to={'/'} className="block mb-12">
+      <Link to={'/dashboard'} className="block mb-12">
         <img className="mx-auto" src="/images/logo-dashboard.png" alt="dashboard-logo" />
       </Link>
       <div className="flex flex-col gap-4 max-w-[212px] mx-auto">

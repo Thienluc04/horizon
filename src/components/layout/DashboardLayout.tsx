@@ -1,6 +1,7 @@
 import { Sidebar } from 'components/common';
 import { FooterDashboard, HeaderDashboard } from 'modules/dashboard';
 import NotFountPage from 'pages/NotFoundPage';
+import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { Outlet } from 'react-router';
 
@@ -12,6 +13,10 @@ export function DashboardLayout(_: DashboardLayoutProps) {
   const currentUser = cookie.currentUser;
 
   if (!currentUser) return <NotFountPage></NotFountPage>;
+
+  useEffect(() => {
+    document.title = 'Manage Page';
+  }, []);
 
   return (
     <div className="flex font-['Open_Sans']">

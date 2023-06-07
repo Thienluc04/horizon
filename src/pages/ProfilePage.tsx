@@ -8,13 +8,14 @@ import * as yup from 'yup';
 import NotFountPage from './NotFoundPage';
 import { CurrentUser, Profile, Response } from 'models';
 import { Radio } from 'components/checkbox';
-import { gender, imgbbAPI, status } from 'utils/constant';
+import { gender, status } from 'utils/constant';
 import { ImageUpload } from 'components/common/ImageUpload';
-import { ChangeEvent, useEffect, useState } from 'react';
-import axios from 'axios';
 import userApi from 'api/userApi';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
+import { storage } from 'firebase/firebase';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { useEffect, useState } from 'react';
 
 export interface ProfilePageProps {}
 
@@ -70,22 +71,17 @@ export default function ProfilePage(_: ProfilePageProps) {
     }
   }, [errors]);
 
-  const handleSelectImage = async (e: any) => {
-    const formData = new FormData();
-    formData.append('image', e.target.files[0]);
-    setLoadingImg(true);
-    const response = await axios({
-      method: 'post',
-      url: imgbbAPI,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  const handleSelectImage = async (file: File | null) => {
+    if (!file) return;
+    const imageRef = ref(storage, `products/users/${file.name}`);
+    await uploadBytes(imageRef, file).then(() => {
+      setLoadingImg(true);
     });
-    if (response.data.data) {
-      setImgUrl(response.data.data.url);
+
+    await getDownloadURL(imageRef).then((url) => {
+      setImgUrl(url);
       setLoadingImg(false);
-    }
+    });
   };
 
   const watchGender = watch('idGender');
@@ -128,8 +124,12 @@ export default function ProfilePage(_: ProfilePageProps) {
                 imgUrl={imgUrl}
                 loading={loadingImg}
                 removeImage={handleRemoveImage}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => handleSelectImage(e)}
-                className="rounded-full w-[100px] !h-[100px] xl:w-[200px] xl:!h-[200px] mx-auto"
+                onChange={(e) => {
+                  if (e.target.files) {
+                    handleSelectImage(e.target.files[0]);
+                  }
+                }}
+                className="!rounded-full w-[100px] !h-[100px] xl:w-[200px] xl:!h-[200px] mx-auto"
               ></ImageUpload>
             </div>
           </div>

@@ -36,11 +36,11 @@ export interface ProfileResponse {
 }
 
 export interface Gender {
-  id: number;
+  id: string;
   name: string;
 }
 
 export interface Role {
-  id: number;
+  id: string;
   name: string;
 }

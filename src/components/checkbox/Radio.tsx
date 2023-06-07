@@ -7,6 +7,7 @@ export interface RadioProps {
   name: string;
   value: string;
   dashboard?: boolean;
+  className?: string;
 }
 
 export function Radio({
@@ -15,6 +16,7 @@ export function Radio({
   name,
   children,
   dashboard,
+  className = '',
   ...props
 }: PropsWithChildren<RadioProps>) {
   const { field } = useController({
@@ -35,7 +37,7 @@ export function Radio({
                     : 'bg-primary border-primary text-white'
                 }`
               : 'border-gray4 text-transparent'
-          }`}
+          } ${className}`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

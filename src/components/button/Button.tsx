@@ -47,7 +47,9 @@ export function Button({
         <Link
           to={to}
           type={type}
-          className={`flex justify-center items-center bg-dashboardPrimary text-white text-base font-medium rounded-md min-h-[40px] px-4 ${className}`}
+          className={`bg-dashboardPrimary text-white border border-gray3 text-base font-medium rounded-md min-h-[40px] flex justify-center items-center px-4 ${
+            isLoading ? '!bg-slate-500 cursor-default' : ''
+          } ${className}`}
           onClick={onClick}
         >
           {children}
@@ -58,7 +60,9 @@ export function Button({
         <Link
           to={to}
           type={type}
-          className={`flex justify-center items-center bg-dashboardSecondary text-white text-base font-medium rounded-md min-h-[40px] px-4 ${className}`}
+          className={`bg-dashboardSecondary text-white border border-gray3 text-base font-medium rounded-md min-h-[40px] px-4 ${
+            isLoading ? '!bg-slate-500 cursor-default' : ''
+          } ${className}`}
           onClick={onClick}
         >
           {children}

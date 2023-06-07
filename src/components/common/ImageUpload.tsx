@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react";
+import { ChangeEvent } from 'react';
 
 export interface ImageUploadProps {
   imgUrl: string;
@@ -12,7 +12,7 @@ export function ImageUpload({
   imgUrl,
   loading,
   removeImage = () => {},
-  className = "",
+  className = '',
   onChange,
   ...props
 }: ImageUploadProps) {
@@ -33,9 +33,7 @@ export function ImageUpload({
           <img
             src={imgUrl}
             alt=""
-            className={`w-full h-full object-cover ${
-              className ? "rounded-full" : "rounded-lg "
-            }`}
+            className={`w-full h-full object-cover rounded-lg ${className}`}
           />
         )}
 

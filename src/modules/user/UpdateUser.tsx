@@ -5,7 +5,7 @@ import { Radio } from 'components/checkbox';
 import { Label } from 'components/label';
 import { userAction } from 'features/user/userSlice';
 import { Profile, Response } from 'models';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
@@ -24,6 +24,8 @@ export function UpdateUser(_: UpdateUserProps) {
     mode: 'onSubmit',
   });
 
+  const [isCustomer, setIsCustomer] = useState<boolean>(false);
+
   const { slug } = useParams();
   const dispatch = useAppDispatch();
 
@@ -41,6 +43,9 @@ export function UpdateUser(_: UpdateUserProps) {
       if (slug) {
         const { data }: Response<Profile> = await userApi.getProfile(slug);
         setValue('idRole', data.idRole);
+        if (data.idRole === role.CUSTOMER) {
+          setIsCustomer(true);
+        }
       }
     })();
   }, []);
@@ -74,56 +79,58 @@ export function UpdateUser(_: UpdateUserProps) {
       <form onSubmit={handleSubmit(handleChangeRoleUser)} className="flex-1">
         <div className="flex flex-col gap-5 lg:gap-10 lg:mt-10 mt-5 px-4">
           <div className="flex lg:flex-row flex-col items-end gap-5 lg:gap-10">
-            <div className="flex-1 flex flex-col gap-3">
-              <Label htmlFor="idRole">Role</Label>
-              <div className="flex flex-wrap gap-5">
-                <Radio
-                  name="idRole"
-                  control={control}
-                  checked={watchRole === role.CUSTOMER}
-                  value={role.CUSTOMER}
-                  dashboard
-                >
-                  Customer
-                </Radio>
-                <Radio
-                  name="idRole"
-                  control={control}
-                  checked={watchRole === role.ADMIN}
-                  value={role.ADMIN}
-                  dashboard
-                >
-                  Admin
-                </Radio>
-                <Radio
-                  name="idRole"
-                  control={control}
-                  checked={watchRole === role.OPERATOR}
-                  value={role.OPERATOR}
-                  dashboard
-                >
-                  Operator
-                </Radio>
-                <Radio
-                  name="idRole"
-                  control={control}
-                  checked={watchRole === role.SHIPPER}
-                  value={role.SHIPPER}
-                  dashboard
-                >
-                  Shipper
-                </Radio>
-                <Radio
-                  name="idRole"
-                  control={control}
-                  checked={watchRole === role.CONTENT_CREATOR}
-                  value={role.CONTENT_CREATOR}
-                  dashboard
-                >
-                  Content Creator
-                </Radio>
+            {!isCustomer && (
+              <div className="flex-1 flex flex-col gap-3">
+                <Label htmlFor="idRole">Role</Label>
+                <div className="flex flex-wrap gap-5">
+                  <Radio
+                    name="idRole"
+                    control={control}
+                    checked={watchRole === role.CUSTOMER}
+                    value={role.CUSTOMER}
+                    dashboard
+                  >
+                    Customer
+                  </Radio>
+                  <Radio
+                    name="idRole"
+                    control={control}
+                    checked={watchRole === role.ADMIN}
+                    value={role.ADMIN}
+                    dashboard
+                  >
+                    Admin
+                  </Radio>
+                  <Radio
+                    name="idRole"
+                    control={control}
+                    checked={watchRole === role.OPERATOR}
+                    value={role.OPERATOR}
+                    dashboard
+                  >
+                    Operator
+                  </Radio>
+                  <Radio
+                    name="idRole"
+                    control={control}
+                    checked={watchRole === role.SHIPPER}
+                    value={role.SHIPPER}
+                    dashboard
+                  >
+                    Shipper
+                  </Radio>
+                  <Radio
+                    name="idRole"
+                    control={control}
+                    checked={watchRole === role.CONTENT_CREATOR}
+                    value={role.CONTENT_CREATOR}
+                    dashboard
+                  >
+                    Content Creator
+                  </Radio>
+                </div>
               </div>
-            </div>
+            )}
             <div className="flex-1 flex gap-2 items-center">
               <Button onClick={handleResetPass} kind="dashboardSecondary">
                 Reset pass

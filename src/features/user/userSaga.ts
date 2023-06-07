@@ -27,12 +27,12 @@ function* handleChangeRole(action: PayloadAction<ChangeRole>) {
 }
 
 function* handleFetchUserList() {
-  const { data }: Response<User[]> = yield call(userApi.getUsers);
-  if (data) {
-    yield put(userAction.fetchUserListSuccess(data));
-  } else {
-    yield put(userAction.fetchUserListFailed());
-  }
+  // const { data }: Response<User[]> = yield call(userApi.getUsers);
+  // if (data) {
+  //   yield put(userAction.fetchUserListSuccess(data));
+  // } else {
+  //   yield put(userAction.fetchUserListFailed());
+  // }
 }
 
 function* handleSearchUser(action: PayloadAction<string>) {

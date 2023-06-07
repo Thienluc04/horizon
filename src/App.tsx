@@ -10,7 +10,8 @@ import ChangePassPage from 'pages/ChangePassPage';
 import { DashboardHome } from 'modules/dashboard';
 import { UpdateUser, CreateUser, ManageUser } from 'modules/user';
 import { ManageOrder, ManageOrderDetails } from 'modules/order';
-import { CreateProduct, ManageProduct, ManageProductDetails } from 'modules/product';
+import { ManageProductDetails, ManageProduct, CreateProduct } from 'modules/product';
+import { OtherMain } from 'modules/orther';
 
 function App() {
   return (
@@ -48,6 +49,8 @@ function App() {
             path="/dashboard/products/createProduct"
             element={<CreateProduct></CreateProduct>}
           ></Route>
+
+          <Route path="/dashboard/other" element={<OtherMain></OtherMain>}></Route>
         </Route>
       </Routes>
     </>
