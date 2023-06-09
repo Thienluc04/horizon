@@ -1,19 +1,24 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
-import { FilterProduct, ListParams, Product, ProductInput } from 'models';
+import { ListParams, PaginationParams, Product, ProductInput, Response } from 'models';
 
 export interface ProductState {
   loading: boolean;
   list: Product[];
-  status?: number;
   idProduct: string | number;
   currentProduct?: Product;
+  pagination: PaginationParams;
 }
 
 const initialState: ProductState = {
   loading: false,
   list: [],
   idProduct: '',
+  pagination: {
+    _limit: 8,
+    _page: 1,
+    _totalRows: 8,
+  },
 };
 
 const productSlice = createSlice({
@@ -23,23 +28,13 @@ const productSlice = createSlice({
     fetchProductList(state, _: PayloadAction<ListParams>) {
       state.loading = true;
     },
-    fetchProductListSuccess(state, action: PayloadAction<Product[]>) {
+    fetchProductListSuccess(state, action: PayloadAction<Response<Product[]>>) {
       state.loading = false;
-      state.list = action.payload;
+      state.list = action.payload.data;
+      state.pagination = action.payload.pagination;
     },
     fetchProductListFailed(state) {
       state.loading = false;
-    },
-    filtersProduct(state, _: PayloadAction<FilterProduct>) {
-      state.loading = true;
-    },
-    filtersProductSuccess(state, action: PayloadAction<Product[]>) {
-      state.loading = false;
-      state.list = action.payload;
-    },
-    filtersProductFailed(state, action: PayloadAction<number>) {
-      state.loading = false;
-      state.status = action.payload;
     },
     getProductBySlug(state, _: PayloadAction<string>) {
       state.loading = false;
@@ -68,9 +63,9 @@ export const productAction = productSlice.actions;
 // Selectors
 export const selectProductList = (state: RootState) => state.product.list;
 export const selectProductLoading = (state: RootState) => state.product.loading;
-export const selectProductStatus = (state: RootState) => state.product.status;
 export const selectIdProduct = (state: RootState) => state.product.idProduct;
 export const selectCurrentProduct = (state: RootState) => state.product.currentProduct;
+export const selectPaginationProduct = (state: RootState) => state.product.pagination;
 
 // Reducers
 const productReducer = productSlice.reducer;

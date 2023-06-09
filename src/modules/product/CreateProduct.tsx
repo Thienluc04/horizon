@@ -3,13 +3,13 @@ import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { Button } from 'components/button';
 import { ImageUpload } from 'components/common/ImageUpload';
 import { Input } from 'components/input';
+import { Select } from 'components/select';
 import { categoryActions, selectCategoryList } from 'features/category/categorySlice';
 import { detailConfigActions } from 'features/detailConfig/detailConfigSlice';
 import { productAction, selectIdProduct } from 'features/product/productSlice';
 import { selectTrademarkList, trademarkActions } from 'features/trademark/trademarkSlice';
 import { storage } from 'firebase/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
-import { Specifications } from 'models';
 import ImageUploader from 'quill-image-uploader';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
@@ -25,55 +25,13 @@ export function CreateProduct(_: CreateProductProps) {
   const { control, setValue, handleSubmit, reset } = useForm({
     mode: 'onSubmit',
   });
-  const [currentTrademark, setcurrentTrademark] = useState<string>('Trademark');
   const [currentCategory, setcurrentCategory] = useState<string>('Category');
-  const [currentCpu, setcurrentCpu] = useState<string>('Cpu');
-  const [currentVga, setcurrentVga] = useState<string>('Vga');
-  const [currentRam, setcurrentRam] = useState<string>('Ram');
-  const [currentScreen, setcurrentScreen] = useState<string>('Screen');
-  const [currentOS, setcurrentOS] = useState<string>('OS');
-  const [currentColor, setcurrentColor] = useState<string>('Color');
-  const [currentDisk, setcurrentDisk] = useState<string>('Disk');
 
-  const [showTrademark, setShowTrademark] = useState<boolean>(false);
   const [showCategory, setShowCategory] = useState<boolean>(false);
-  const [showCpu, setShowCpu] = useState<boolean>(false);
-  const [showVga, setShowVga] = useState<boolean>(false);
-  const [showRam, setShowRam] = useState<boolean>(false);
-  const [showScreen, setShowScreen] = useState<boolean>(false);
-  const [showOS, setShowOS] = useState<boolean>(false);
-  const [showColor, setShowColor] = useState<boolean>(false);
-  const [showDisk, setShowDisk] = useState<boolean>(false);
 
-  const [trademarkValue, setTrademarkValue] = useState<string>('-1');
-  const [categoryValue, setCategoryValue] = useState<string>('-1');
-  const [cpuValue, setCpuValue] = useState<string>('-1');
-  const [vgaValue, setVgaValue] = useState<string>('-1');
-  const [ramValue, setRamValue] = useState<string>('-1');
-  const [screenValue, setScreenValue] = useState<string>('-1');
-  const [osValue, setOSValue] = useState<string>('-1');
-  const [colorValue, setColorValue] = useState<string>('-1');
-  const [diskValue, setDiskValue] = useState<string>('-1');
-
-  const dispatch = useAppDispatch();
-
+  const [currentTrademark, setcurrentTrademark] = useState<string>('Trademark');
+  const [showTrademark, setShowTrademark] = useState<boolean>(false);
   const trademarks = useAppSelector(selectTrademarkList);
-  const categories = useAppSelector(selectCategoryList);
-  const [cpuList, setCpuList] = useState<Specifications[]>();
-  const [vgaList, setVgaList] = useState<Specifications[]>();
-  const [ramList, setRamList] = useState<Specifications[]>();
-  const [screenList, setScreenList] = useState<Specifications[]>();
-  const [osList, setOSList] = useState<Specifications[]>();
-  const [colorList, setColorList] = useState<Specifications[]>();
-  const [diskList, setDiskList] = useState<Specifications[]>();
-
-  useEffect(() => {
-    async function fetchData() {
-      await dispatch(categoryActions.fetchCategoryList());
-    }
-    fetchData();
-  }, []);
-
   useEffect(() => {
     async function fetchData() {
       await dispatch(trademarkActions.fetchTrademarkList());
@@ -81,52 +39,25 @@ export function CreateProduct(_: CreateProductProps) {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getCpus();
-      setCpuList(data);
-    })();
-  }, []);
+  const [trademarkValue, setTrademarkValue] = useState<string>('');
+  const [categoryValue, setCategoryValue] = useState<string>('');
+  const [cpuValue, setCpuValue] = useState<string>('');
+  const [vgaValue, setVgaValue] = useState<string>('');
+  const [ramValue, setRamValue] = useState<string>('');
+  const [screenValue, setScreenValue] = useState<string>('');
+  const [osValue, setOSValue] = useState<string>('');
+  const [colorValue, setColorValue] = useState<string>('');
+  const [diskValue, setDiskValue] = useState<string>('');
+
+  const dispatch = useAppDispatch();
+
+  const categories = useAppSelector(selectCategoryList);
 
   useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getVgas();
-      setVgaList(data);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getRams();
-      setRamList(data);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getScreens();
-      setScreenList(data);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getOS();
-      setOSList(data);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getColors();
-      setColorList(data);
-    })();
-  }, []);
-  useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await specificationsApi.getDisks();
-      setDiskList(data);
-    })();
+    async function fetchData() {
+      await dispatch(categoryActions.fetchCategoryList());
+    }
+    fetchData();
   }, []);
 
   const speRef = useRef<HTMLDivElement>(null);
@@ -209,7 +140,7 @@ export function CreateProduct(_: CreateProductProps) {
   );
 
   useEffect(() => {
-    if (categoryValue !== '-1' && trademarkValue !== '-1' && speId) {
+    if (categoryValue !== '' && trademarkValue !== '' && speId) {
       setValue('idCategory', categoryValue);
       setValue('idTrademark', trademarkValue);
       setValue('idSpecifications', speId);
@@ -248,16 +179,17 @@ export function CreateProduct(_: CreateProductProps) {
       imageUrl.length > 0)
     ) {
       values.slug = slugify(values.name, { lower: true });
-      if (categoryValue !== '-1' && trademarkValue !== '-1' && speId) {
+      if (categoryValue !== '' && trademarkValue !== '' && speId) {
+        console.log(values);
         await dispatch(
           productAction.createProduct({
             CurrentPriceInput: values.currentPrice,
-            idCategoryInput: categoryValue,
+            idCategoryInput: values.idCategory,
             IdSpecificationsInput: speId + '',
-            IDTradeMarkInput: trademarkValue,
+            IDTradeMarkInput: values.idCategory,
             NameInput: values.name,
             SlugInput: values.slug,
-            UrlImageProductInput: imageUrl,
+            UrlImageProductInput: values.image,
           })
         );
         reset({
@@ -275,7 +207,7 @@ export function CreateProduct(_: CreateProductProps) {
   };
 
   return (
-    <div className="bg-[#E7E7E3] p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6">
       <h1 className="text-2xl font-semibold leading-7">Create New Product</h1>
       <div className="flex justify-between">
         <div className="flex">
@@ -386,7 +318,7 @@ export function CreateProduct(_: CreateProductProps) {
                         key={item.ID}
                         onClick={() => {
                           setcurrentCategory(item.name);
-                          setCategoryValue(item.ID);
+                          setCategoryValue(item.ID + '');
                         }}
                         className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
                       >
@@ -439,311 +371,52 @@ export function CreateProduct(_: CreateProductProps) {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Cpu</h2>
-                <div
-                  onClick={() => setShowCpu(!showCpu)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentCpu}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showCpu && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {cpuList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentCpu(item.name);
-                          setCpuValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Select
+                title="Cpu"
+                action={specificationsApi.getCpus()}
+                setValue={setCpuValue}
+                kind={1}
+              ></Select>
             </div>
             <div className="flex gap-2 flex-1">
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Vga</h2>
-                <div
-                  onClick={() => setShowVga(!showVga)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentVga}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showVga && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {vgaList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentVga(item.name);
-                          setVgaValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Ram</h2>
-                <div
-                  onClick={() => setShowRam(!showRam)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentRam}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showRam && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {ramList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentRam(item.name);
-                          setRamValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Screen</h2>
-                <div
-                  onClick={() => setShowScreen(!showScreen)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentScreen}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showScreen && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {screenList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentScreen(item.name);
-                          setScreenValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Select
+                title="Vga"
+                action={specificationsApi.getVgas()}
+                setValue={setVgaValue}
+                kind={2}
+              ></Select>
+              <Select
+                title="Ram"
+                action={specificationsApi.getRams()}
+                setValue={setRamValue}
+                kind={3}
+              ></Select>
+              <Select
+                title="Screen"
+                action={specificationsApi.getScreens()}
+                setValue={setScreenValue}
+                kind={4}
+              ></Select>
             </div>
             <div className="flex gap-2 flex-1">
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">OS</h2>
-                <div
-                  onClick={() => setShowOS(!showOS)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentOS}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showOS && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {osList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentOS(item.name);
-                          setOSValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Color</h2>
-                <div
-                  onClick={() => setShowColor(!showColor)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentColor}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showColor && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {colorList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentColor(item.name);
-                          setColorValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-2 flex-1">
-                <h2 className="text-base font-semibold text-dashboardPrimary">Disk</h2>
-                <div
-                  onClick={() => setShowDisk(!showDisk)}
-                  className="relative h-full p-3 flex justify-between items-center border border-dashboardPrimary rounded-lg px-2 cursor-pointer bg-white min-w-[146px] text-sm"
-                >
-                  {currentDisk}
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                  <div
-                    className={`absolute ${
-                      !showDisk && 'hidden'
-                    } top-[100%] z-10 left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
-                  >
-                    {diskList?.map((item) => (
-                      <div
-                        key={item.ID}
-                        onClick={() => {
-                          setcurrentDisk(item.name);
-                          setDiskValue(item.ID);
-                        }}
-                        className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm"
-                      >
-                        {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <Select
+                title="OS"
+                action={specificationsApi.getOS()}
+                setValue={setOSValue}
+                kind={5}
+              ></Select>
+              <Select
+                title="Color"
+                action={specificationsApi.getColors()}
+                setValue={setColorValue}
+                kind={6}
+              ></Select>
+              <Select
+                title="Disk"
+                action={specificationsApi.getDisks()}
+                setValue={setDiskValue}
+                kind={7}
+              ></Select>
             </div>
             <Button onClick={handleInsertSpe} kind="dashboardSecondary" className="mx-auto">
               Add

@@ -4,6 +4,12 @@ export interface Specifications {
   name: string;
 }
 
+export interface SpeInput {
+  id?: string;
+  name: string;
+  idCategory: string;
+}
+
 export interface SpecificationsInput {
   IdCPUInput: string;
   IdRAMInput: string;

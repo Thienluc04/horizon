@@ -1,6 +1,6 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import userApi from 'api/userApi';
-import { ChangePass, ChangeRole, Response, User } from 'models';
+import { ChangePass, ChangeRole, ListParams, Response, User } from 'models';
 import { call, put, takeLatest } from 'redux-saga/effects';
 import { userAction } from './userSlice';
 import { status } from 'utils/constant';
@@ -18,21 +18,21 @@ function* handleChangePass(action: PayloadAction<ChangePass>) {
 }
 
 function* handleChangeRole(action: PayloadAction<ChangeRole>) {
-  const response: Response<number> = yield call(userApi.changeRole, action.payload);
-  if (response.data === status.OK) {
+  const response: number = yield call(userApi.changeRole, action.payload);
+  if (response === status.OK) {
     toast.success('Change role user success');
-  } else if (response.data === status.ERROR || response.data === status.EXIST) {
+  } else if (response === status.ERROR || response === status.EXIST) {
     toast.error('Something is wrong');
   }
 }
 
-function* handleFetchUserList() {
-  // const { data }: Response<User[]> = yield call(userApi.getUsers);
-  // if (data) {
-  //   yield put(userAction.fetchUserListSuccess(data));
-  // } else {
-  //   yield put(userAction.fetchUserListFailed());
-  // }
+function* handleFetchUserList(action: PayloadAction<ListParams>) {
+  const response: Response<User[]> = yield call(userApi.getUsers, action.payload);
+  if (response.data) {
+    yield put(userAction.fetchUserListSuccess(response));
+  } else {
+    yield put(userAction.fetchUserListFailed());
+  }
 }
 
 function* handleSearchUser(action: PayloadAction<string>) {

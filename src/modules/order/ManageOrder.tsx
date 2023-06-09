@@ -4,7 +4,7 @@ export interface ManageOrderProps {}
 
 export function ManageOrder(_: ManageOrderProps) {
   return (
-    <div className="bg-[#E7E7E3] p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6 border-l ">
       <h1 className="text-2xl font-semibold leading-7">Manage Orders</h1>
       <div className="flex justify-between">
         <div className="flex">

@@ -61,11 +61,11 @@ export function CreateUser(_: CreateUserProps) {
         PhoneNumber: '',
         urlAvata: '',
       });
-      if (response.data === status.OK) {
+      if (response === status.OK) {
         toast.success('Account has just been created');
-      } else if (response.data === status.EXIST) {
+      } else if (response === status.EXIST) {
         toast.error('Account already exists');
-      } else if (response.data === status.ERROR) {
+      } else if (response === status.ERROR) {
         toast.error("Can't create this account, please enter again");
       }
     } catch (error) {
@@ -74,7 +74,7 @@ export function CreateUser(_: CreateUserProps) {
     reset({ username: '', email: '', fullname: '', idRole: '', password: '123456' });
   };
   return (
-    <div className="p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6">
       <h1 className="text-2xl font-semibold leading-7">Create User</h1>
       <div className="flex justify-between">
         <div className="flex">
@@ -92,7 +92,7 @@ export function CreateUser(_: CreateUserProps) {
                 control={control}
                 name="username"
                 placeholder="Please enter your username"
-                className="w-[350px] lg:w-full"
+                className="w-[350px] lg:w-full bg-white border !border-dashboardPrimary"
                 type="username"
               ></Input>
             </div>
@@ -102,7 +102,7 @@ export function CreateUser(_: CreateUserProps) {
                 control={control}
                 name="email"
                 placeholder="Enter your email"
-                className="w-[350px] lg:w-full"
+                className="w-[350px] lg:w-full bg-white border !border-dashboardPrimary"
                 type="email"
               ></Input>
             </div>
@@ -114,7 +114,7 @@ export function CreateUser(_: CreateUserProps) {
                 control={control}
                 name="fullname"
                 placeholder="Please enter your fullname"
-                className="w-[350px] lg:w-full"
+                className="w-[350px] lg:w-full bg-white border !border-dashboardPrimary"
                 type="fullname"
               ></Input>
             </div>
@@ -176,7 +176,7 @@ export function CreateUser(_: CreateUserProps) {
                 control={control}
                 name="password"
                 placeholder="Please enter your password"
-                className="w-[350px] lg:w-full"
+                className="w-[350px] lg:w-full "
                 type="text"
                 disabled
               ></Input>

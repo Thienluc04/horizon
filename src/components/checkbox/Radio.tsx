@@ -36,7 +36,7 @@ export function Radio({
                     ? 'bg-dashboardPrimary border-dashboardPrimary text-white'
                     : 'bg-primary border-primary text-white'
                 }`
-              : 'border-gray4 text-transparent'
+              : 'border-dashboardPrimary text-transparent'
           } ${className}`}
         >
           <svg

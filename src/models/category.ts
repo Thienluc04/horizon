@@ -1,5 +1,6 @@
 export interface Category {
-  ID: string;
+  ID?: string;
+  id?: string;
   name: string;
   slug: string;
 }

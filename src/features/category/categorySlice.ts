@@ -26,6 +26,12 @@ const categorySlice = createSlice({
     fetchCategoryListFailed(state) {
       state.loading = false;
     },
+    insertCategory(state, _: PayloadAction<Category>) {
+      state.loading = false;
+    },
+    updateCategory(state, _: PayloadAction<Category>) {
+      state.loading = false;
+    },
   },
 });
 

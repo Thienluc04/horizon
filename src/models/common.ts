@@ -12,5 +12,26 @@ export interface Response<T> {
 export interface ListParams {
   page: number;
   limit: number;
-  idStatusProductInput: number;
+  idStatusProductInput?: number;
+
+  keyWord?: string;
+  nameTradeMarkInput?: string;
+  nameCategoryInput?: string;
+  nameCpuInput?: string;
+  nameRamInput?: string;
+  nameDiskInput?: string;
+  nameVgaInput?: string;
+  nameScreenInput?: string;
+  nameColorInput?: string;
+  nameOsInput?: string;
+
+  idGender?: string;
+  idRole?: string;
+}
+
+export interface OptionValues {
+  optionId: string;
+  categoryId: string;
+  itemId: string;
+  name: string;
 }

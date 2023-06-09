@@ -1,8 +1,8 @@
-import { ChangePass, ChangeRole, Profile, Response, User } from 'models';
+import { ChangePass, ChangeRole, ListParams, Profile, Response, User } from 'models';
 import axiosClient from './axiosClient';
 
 const userApi = {
-  getProfile(username: string): Promise<Response<Profile>> {
+  getProfile(username: string): Promise<Profile> {
     const url = '/getProfile.php';
     return axiosClient({
       method: 'get',
@@ -41,7 +41,7 @@ const userApi = {
     });
   },
 
-  changeRole(value: ChangeRole): Promise<Response<number>> {
+  changeRole(value: ChangeRole): Promise<number> {
     const url = '/changeRole.php';
     return axiosClient.post(url, {
       username: value.username,
@@ -56,9 +56,11 @@ const userApi = {
     });
   },
 
-  getUsers(): Promise<Response<User[]>> {
+  getUsers(params: ListParams): Promise<Response<User[]>> {
     const url = '/getUser.php';
-    return axiosClient.get(url);
+    return axiosClient.get(url, {
+      params,
+    });
   },
 
   searchUser(value: string): Promise<Response<User[]>> {

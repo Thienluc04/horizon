@@ -1,6 +1,11 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import { selectUserList, selectUserLoading, userAction } from 'features/user/userSlice';
-import { Gender, Role, User } from 'models';
+import {
+  selectUserList,
+  selectUserLoading,
+  selectUserPagination,
+  userAction,
+} from 'features/user/userSlice';
+import { Gender, ListParams, Role, User } from 'models';
 import { useEffect, useRef, useState } from 'react';
 import { FieldValues, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
@@ -41,6 +46,8 @@ const roleList: Array<Role> = [
   },
 ];
 
+const USER_PER_PAGE = 4;
+
 export function ManageUser(_: ManageUserProps) {
   const [currentGender, setCurrentGender] = useState<string>('All Gender');
   const [currentRole, setCurrentRole] = useState<string>('All Role');
@@ -48,59 +55,66 @@ export function ManageUser(_: ManageUserProps) {
   const [showGender, setShowGender] = useState<boolean>(false);
   const [showRole, setShowRole] = useState<boolean>(false);
 
-  const [genderValue, setGenderValue] = useState<string>('-1');
-  const [roleValue, setRoleValue] = useState<string>('-1');
+  const [currentPage, setCurentPage] = useState<number>(1);
+  const [totalPage, setTotalPage] = useState<number>(0);
 
-  const inputRef = useRef(null);
+  const [params, setParams] = useState<ListParams>({
+    page: currentPage,
+    limit: USER_PER_PAGE,
+  });
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const dispatch = useAppDispatch();
+
+  const pagination = useAppSelector(selectUserPagination);
 
   const users: Array<User> = useAppSelector(selectUserList);
   const loading = useAppSelector(selectUserLoading);
 
   useEffect(() => {
     (async () => {
-      await dispatch(userAction.fetchUserList());
+      await dispatch(userAction.fetchUserList(params));
     })();
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (genderValue.length > 0 && currentGender !== 'All Gender') {
-        await dispatch(userAction.getUserWithGender(genderValue));
-      } else if (currentGender === 'All Gender') {
-        await dispatch(userAction.fetchUserList());
-      }
-    })();
-  }, [currentGender]);
-
-  useEffect(() => {
-    (async () => {
-      if (roleValue.length > 0 && currentRole !== 'All Role') {
-        await dispatch(userAction.getUserWithRole(roleValue));
-      } else if (currentRole === 'All Role') {
-        await dispatch(userAction.fetchUserList());
-      }
-    })();
-  }, [currentRole]);
 
   const hanldeSearchUser: SubmitHandler<FieldValues> = async (e) => {
     e.preventDefault();
     if (inputRef.current) {
-      const input: any = inputRef.current;
-      await dispatch(userAction.searchUser(input.value));
+      const input = inputRef.current;
+      await dispatch(userAction.fetchUserList({ ...params, keyWord: input.value }));
     }
   };
 
+  useEffect(() => {
+    if (pagination) {
+      setTotalPage(Math.ceil(pagination._totalRows / USER_PER_PAGE));
+    }
+  }, [pagination]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await dispatch(userAction.fetchUserList({ ...params, page: currentPage }));
+    }
+    fetchData();
+  }, [currentPage]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await dispatch(userAction.fetchUserList(params));
+    }
+    fetchData();
+  }, [params]);
+
   return (
-    <div className="bg-[#E7E7E3] p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6">
       <h1 className="text-2xl font-semibold leading-7">Manage Users</h1>
       <div className="flex justify-between">
         <div className="flex">
           <p className="font-semibold mt-1">Home {'>'} Manage Users</p>
         </div>
       </div>
-      <div className="flex flex-col gap-4 bg-white rounded-2xl p-6 mb-[100px]">
+      <div className="flex flex-col gap-4 bg-white rounded-2xl p-6">
         <div className="flex justify-between items-center border-b border-b-[rgba(35,_35,_33,_0.2)] pb-4">
           <h2 className="font-bold text-xl">All Users</h2>
           <div className="flex gap-4">
@@ -139,7 +153,10 @@ export function ManageUser(_: ManageUserProps) {
                 <div
                   onClick={() => {
                     setCurrentGender('All Gender');
-                    setGenderValue('-1');
+                    setParams((prev) => {
+                      const { idGender, ...rest } = prev;
+                      return rest;
+                    });
                   }}
                   className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 >
@@ -150,7 +167,7 @@ export function ManageUser(_: ManageUserProps) {
                     key={item.id}
                     onClick={() => {
                       setCurrentGender(item.name);
-                      setGenderValue(item.id);
+                      setParams({ ...params, idGender: item.id });
                     }}
                     className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                   >
@@ -188,7 +205,10 @@ export function ManageUser(_: ManageUserProps) {
                 <div
                   onClick={() => {
                     setCurrentRole('All Role');
-                    setRoleValue('-1');
+                    setParams((prev) => {
+                      const { idRole, ...rest } = prev;
+                      return rest;
+                    });
                   }}
                   className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 >
@@ -199,7 +219,7 @@ export function ManageUser(_: ManageUserProps) {
                     key={item.id}
                     onClick={() => {
                       setCurrentRole(item.name);
-                      setRoleValue(item.id);
+                      setParams({ ...params, idRole: item.id });
                     }}
                     className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                   >
@@ -214,7 +234,7 @@ export function ManageUser(_: ManageUserProps) {
                 placeholder="Search"
                 name="search"
                 id="search"
-                className="border border-gray-400 py-1 px-2 rounded-lg h-10"
+                className="border border-dashboardSecondary py-1 px-2 rounded-lg h-10"
                 ref={inputRef}
               />
               <button
@@ -327,7 +347,6 @@ export function ManageUser(_: ManageUserProps) {
                     </p>
                   </div>
                   <div className="py-4 px-2 w-[120px] flex gap-2 justify-end">
-                    {/* {user.idRole !== role.CUSTOMER && ( */}
                     <Link
                       to={`/dashboard/users/${user.username}`}
                       className="py-1 px-2 border border-[#888] rounded-lg"
@@ -347,24 +366,6 @@ export function ManageUser(_: ManageUserProps) {
                         />
                       </svg>
                     </Link>
-                    {/* )} */}
-
-                    <span className="py-1 px-2 border border-[#888] rounded-lg cursor-pointer">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                        />
-                      </svg>
-                    </span>
                   </div>
                 </div>
               );
@@ -374,6 +375,75 @@ export function ManageUser(_: ManageUserProps) {
           )}
         </div>
       </div>
+      {pagination && users.length > 0 && (
+        <div className="flex items-center mx-auto bg-white border border-gray-400 rounded-lg">
+          <div className="flex">
+            <div
+              className={`border border-gray3 rounded-l-lg h-10 w-11 flex items-center justify-center ${
+                currentPage <= 1 ? 'text-gray5 bg-gray2' : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (currentPage > 1) {
+                  setCurentPage(currentPage - 1);
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </div>
+            {new Array(totalPage).fill(0).map((_, index) => (
+              <div
+                key={index}
+                className={`border border-gray3 h-10 w-11  flex items-center justify-center ${
+                  currentPage === index + 1 ? 'text-gray5 bg-gray2' : 'cursor-pointer'
+                }`}
+                onClick={() => {
+                  if (currentPage !== index + 1) {
+                    setCurentPage(index + 1);
+                  }
+                }}
+              >
+                {index + 1}
+              </div>
+            ))}
+            <div
+              className={`border border-gray3 rounded-r-lg h-10 w-11 flex items-center justify-center ${
+                currentPage >= totalPage || pagination?._totalRows <= USER_PER_PAGE
+                  ? 'text-gray5 bg-gray2'
+                  : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (currentPage < totalPage && pagination._totalRows > USER_PER_PAGE) {
+                  setCurentPage(currentPage + 1);
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

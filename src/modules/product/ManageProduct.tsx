@@ -3,18 +3,20 @@ import { Button } from 'components/button';
 import { categoryActions, selectCategoryList } from 'features/category/categorySlice';
 import {
   productAction,
+  selectPaginationProduct,
   selectProductList,
   selectProductLoading,
-  selectProductStatus,
 } from 'features/product/productSlice';
 import { selectTrademarkList, trademarkActions } from 'features/trademark/trademarkSlice';
-import { useEffect, useState } from 'react';
-import { active, status } from 'utils/constant';
+import { ListParams } from 'models';
+import { useEffect, useRef, useState } from 'react';
+import { FieldValues, SubmitHandler } from 'react-hook-form';
+import { active } from 'utils/constant';
 import { ProductItem, ProductList } from '.';
 
 export interface ManageProductProps {}
 
-const ITEM_PER_PAGE = 10;
+const ITEM_PER_PAGE = 4;
 
 export function ManageProduct(_: ManageProductProps) {
   const [currentTrademark, setCurrentTradeMark] = useState<string>('All Trademark');
@@ -25,65 +27,64 @@ export function ManageProduct(_: ManageProductProps) {
   const [showCategory, setShowCategory] = useState<boolean>(false);
   const [showStatus, setShowStatus] = useState<boolean>(false);
 
-  const [, setCategoryValue] = useState<string>('-1');
-  const [, setTrademarkValue] = useState<string>('-1');
-  const [, setStatusValue] = useState<number>(1);
-
   const dispatch = useAppDispatch();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const products = useAppSelector(selectProductList);
   const loading = useAppSelector(selectProductLoading);
-  const statusCode = useAppSelector(selectProductStatus);
+  const pagination = useAppSelector(selectPaginationProduct);
 
   const categories = useAppSelector(selectCategoryList);
   const trademarks = useAppSelector(selectTrademarkList);
 
-  const [currentPage] = useState<number>(1);
-  const [statusProduct] = useState<number>(active.PUBLIC);
+  const [currentPage, setCurentPage] = useState<number>(1);
+
+  const [params, setParams] = useState<ListParams>({
+    page: currentPage,
+    limit: ITEM_PER_PAGE,
+    idStatusProductInput: active.PUBLIC,
+  });
+
+  const [totalPage, setTotalPage] = useState<number>(0);
 
   useEffect(() => {
     async function fetchData() {
-      await dispatch(
-        productAction.fetchProductList({
-          page: currentPage,
-          limit: ITEM_PER_PAGE,
-          idStatusProductInput: statusProduct,
-        })
-      );
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
+      await dispatch(productAction.fetchProductList(params));
       await dispatch(categoryActions.fetchCategoryList());
-    }
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
       await dispatch(trademarkActions.fetchTrademarkList());
     }
     fetchData();
   }, []);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     await dispatch(
-  //       productAction.filtersProduct({
-  //         idCategoryInput: categoryValue,
-  //         idStatusProduct: statusValue,
-  //         IDTradeMarkInput: trademarkValue,
-  //       })
-  //     );
-  //   })();
-  // }, [categoryValue, trademarkValue, statusValue]);
+  useEffect(() => {
+    if (pagination) {
+      setTotalPage(Math.ceil(pagination._totalRows / ITEM_PER_PAGE));
+    }
+  }, [pagination]);
 
-  const handleSearchProduct = () => {};
+  useEffect(() => {
+    async function fetchData() {
+      await dispatch(productAction.fetchProductList({ ...params, page: currentPage }));
+    }
+    fetchData();
+  }, [currentPage]);
+
+  useEffect(() => {
+    async function fetchData() {
+      await dispatch(productAction.fetchProductList(params));
+    }
+    fetchData();
+  }, [params]);
+
+  const handleSearchProduct: SubmitHandler<FieldValues> = (e) => {
+    e.preventDefault();
+    const input = inputRef.current;
+    setParams({ ...params, keyWord: input?.value });
+  };
 
   return (
-    <div className="bg-[#E7E7E3] p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6">
       <h1 className="text-2xl font-semibold leading-7">All Products</h1>
       <div className="flex justify-between items-center">
         <div className="flex">
@@ -120,7 +121,7 @@ export function ManageProduct(_: ManageProductProps) {
                 className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 onClick={() => {
                   setCurrentStatus('Public');
-                  setStatusValue(active.PUBLIC);
+                  setParams({ ...params, idStatusProductInput: active.PUBLIC });
                 }}
               >
                 Public
@@ -129,7 +130,7 @@ export function ManageProduct(_: ManageProductProps) {
                 className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 onClick={() => {
                   setCurrentStatus('Private');
-                  setStatusValue(active.PRIVATE);
+                  setParams({ ...params, idStatusProductInput: active.PRIVATE });
                 }}
               >
                 Private
@@ -165,7 +166,10 @@ export function ManageProduct(_: ManageProductProps) {
               <div
                 onClick={() => {
                   setCurrentCategory('All Category');
-                  setCategoryValue('-1');
+                  setParams((prev) => {
+                    const { nameCategoryInput, ...rest } = prev;
+                    return rest;
+                  });
                 }}
                 className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
               >
@@ -176,7 +180,7 @@ export function ManageProduct(_: ManageProductProps) {
                   key={item.ID}
                   onClick={() => {
                     setCurrentCategory(item.name);
-                    setCategoryValue(item.ID);
+                    setParams({ ...params, nameCategoryInput: item.name });
                   }}
                   className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 >
@@ -214,7 +218,10 @@ export function ManageProduct(_: ManageProductProps) {
               <div
                 onClick={() => {
                   setCurrentTradeMark('All Trademark');
-                  setTrademarkValue('-1');
+                  setParams((prev) => {
+                    const { nameTradeMarkInput, ...rest } = prev;
+                    return rest;
+                  });
                 }}
                 className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
               >
@@ -225,7 +232,7 @@ export function ManageProduct(_: ManageProductProps) {
                   key={item.ID}
                   onClick={() => {
                     setCurrentTradeMark(item.name);
-                    setTrademarkValue(item.ID);
+                    setParams({ ...params, nameTradeMarkInput: item.name });
                   }}
                   className="py-2 hover:bg-dashboardPrimary hover:text-white text-center"
                 >
@@ -241,7 +248,7 @@ export function ManageProduct(_: ManageProductProps) {
               name="search"
               id="search"
               className="border border-dashboardSecondary py-1 px-2 rounded-lg h-10 bg-white"
-              // ref={inputRef}
+              ref={inputRef}
             />
             <button
               type="submit"
@@ -276,21 +283,82 @@ export function ManageProduct(_: ManageProductProps) {
       )}
       <ProductList>
         {!loading &&
-          statusCode !== status.NO_CONTENT &&
           products.map((product) => (
-            <ProductItem
-              params={{
-                page: currentPage,
-                limit: ITEM_PER_PAGE,
-                idStatusProductInput: statusProduct,
-              }}
-              key={product.idProduct}
-              product={product}
-            ></ProductItem>
+            <ProductItem params={params} key={product.idProduct} product={product}></ProductItem>
           ))}
       </ProductList>
-      {!loading && statusCode === status.NO_CONTENT && (
+      {!loading && products.length <= 0 && (
         <p className="text-center">There are no results matching this filter</p>
+      )}
+
+      {pagination && products.length > 0 && (
+        <div className="flex items-center mx-auto bg-white border border-gray-400 rounded-lg">
+          <div className="flex">
+            <div
+              className={`border border-gray3 rounded-l-lg h-10 w-11 flex items-center justify-center ${
+                currentPage <= 1 ? 'text-gray5 bg-gray2' : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (currentPage > 1) {
+                  setCurentPage(currentPage - 1);
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </div>
+            {new Array(totalPage).fill(0).map((_, index) => (
+              <div
+                key={index}
+                className={`border border-gray3 h-10 w-11  flex items-center justify-center ${
+                  currentPage === index + 1 ? 'text-gray5 bg-gray2' : 'cursor-pointer'
+                }`}
+                onClick={() => {
+                  if (currentPage !== index + 1) {
+                    setCurentPage(index + 1);
+                  }
+                }}
+              >
+                {index + 1}
+              </div>
+            ))}
+            <div
+              className={`border border-gray3 rounded-r-lg h-10 w-11 flex items-center justify-center ${
+                currentPage >= totalPage || pagination?._totalRows <= ITEM_PER_PAGE
+                  ? 'text-gray5 bg-gray2'
+                  : 'cursor-pointer'
+              }`}
+              onClick={() => {
+                if (currentPage < totalPage && pagination._totalRows > ITEM_PER_PAGE) {
+                  setCurentPage(currentPage + 1);
+                }
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-5 h-5"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

@@ -6,7 +6,6 @@ import { useCookies } from 'react-cookie';
 import { useAppDispatch } from 'app/hooks';
 import { authAction } from 'features/auth/authSlice';
 import { CurrentUser } from 'models';
-import { role } from 'utils/constant';
 
 export interface HeaderProps {}
 
@@ -262,11 +261,6 @@ export function Header({}: HeaderProps) {
                     <li>
                       <Link to={'/profile'}>Profile</Link>
                     </li>
-                    {currentUser.idRole === role.ADMIN && (
-                      <li>
-                        <Link to={'/dashboard'}>Dasboard</Link>
-                      </li>
-                    )}
                   </div>
                 </div>
               </div>

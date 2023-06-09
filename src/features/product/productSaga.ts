@@ -8,26 +8,13 @@ import { status } from 'utils/constant';
 
 function* handleFetchProduct(action: PayloadAction<ListParams>) {
   try {
-    const { data }: Response<Product[]> = yield call(productApi.getAll, action.payload);
-    if (data) {
-      yield put(productAction.fetchProductListSuccess(data));
+    const response: Response<Product[]> = yield call(productApi.getAll, action.payload);
+    if (response.data) {
+      yield put(productAction.fetchProductListSuccess(response));
     }
   } catch (error) {
     yield put(productAction.fetchProductListFailed());
   }
-}
-
-function* handleFilterProduct(_: PayloadAction<FilterProduct>) {
-  // try {
-  //   const { data }: Response<Product[]> = yield call(productApi.filterProduct, action.payload);
-  //   if (data[0]) {
-  //     yield put(productAction.filtersProductSuccess(data));
-  //   } else if (data) {
-  //     yield put(productAction.filtersProductFailed(Number(data)));
-  //   }
-  // } catch (error) {
-  //   console.log('function*handleFilterProduct ~ error:', error);
-  // }
 }
 
 function* handleCreateProduct(action: PayloadAction<ProductInput>) {
@@ -87,7 +74,6 @@ function* handleGetProductBySlug(action: PayloadAction<string>) {
 
 export default function* productSaga() {
   yield takeLatest(productAction.fetchProductList.type, handleFetchProduct);
-  yield takeLatest(productAction.filtersProduct.type, handleFilterProduct);
   yield takeLatest(productAction.createProduct.type, handleCreateProduct);
   yield takeLatest(productAction.updateProduct.type, handleUpdateProduct);
   yield takeLatest(productAction.deleteProduct.type, handleDeleteProduct);

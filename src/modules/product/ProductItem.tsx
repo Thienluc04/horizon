@@ -2,6 +2,7 @@ import { useAppDispatch } from 'app/hooks';
 import { productAction } from 'features/product/productSlice';
 import { ListParams, Product } from 'models';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export interface ProductItemProps {
   className?: string;
@@ -13,8 +14,21 @@ export function ProductItem({ product, params, className = '' }: ProductItemProp
   const dispatch = useAppDispatch();
 
   const handleDeleteProduct = async () => {
-    await dispatch(productAction.deleteProduct(product.idProduct));
-    await dispatch(productAction.fetchProductList(params));
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await dispatch(productAction.deleteProduct(product.idProduct));
+        await dispatch(productAction.fetchProductList(params));
+        Swal.fire('Deleted!', 'This product has been deleted.', 'success');
+      }
+    });
   };
 
   return (
@@ -27,13 +41,13 @@ export function ProductItem({ product, params, className = '' }: ProductItemProp
           <div className="flex flex-col gap-4">
             <div className="flex-1">
               <Link
-                to={'/dashboard/products/1'}
+                to={`/dashboard/products/${product.Slug}`}
                 className="font-semibold text-dashboardPrimary text-base leading-[22px] min-h-[44px] block"
               >
                 {product.NameProduct}
               </Link>
               <div className="flex justify-between">
-                <p className="text-sm font-semibold">{product.Category}</p>
+                <p className="text-sm font-semibold">{product.TradeMark}</p>
                 <span
                   onClick={handleDeleteProduct}
                   className="p-2 border border-red rounded-full text-red cursor-pointer hover:bg-red hover:text-white transition-all"
@@ -59,7 +73,7 @@ export function ProductItem({ product, params, className = '' }: ProductItemProp
         </div>
       </div>
       <div className="flex justify-between">
-        <h2 className="text-dashboardPrimary font-semibold text-base mb-1">{product.TradeMark}</h2>
+        <h2 className="text-dashboardPrimary font-semibold text-base mb-1">{product.Category}</h2>
         <p className="text-sm font-bold text-dashboardPrimary">
           {Number(product.CurrentPrice).toLocaleString('it-IT', {
             style: 'currency',

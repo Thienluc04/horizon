@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import { role } from 'utils/constant';
+import { role, status } from 'utils/constant';
 
 export interface UpdateUserProps {}
 
@@ -41,9 +41,9 @@ export function UpdateUser(_: UpdateUserProps) {
   useEffect(() => {
     (async () => {
       if (slug) {
-        const { data }: Response<Profile> = await userApi.getProfile(slug);
-        setValue('idRole', data.idRole);
-        if (data.idRole === role.CUSTOMER) {
+        const response: Profile = await userApi.getProfile(slug);
+        setValue('idRole', response?.idRole);
+        if (response?.idRole === role.CUSTOMER) {
           setIsCustomer(true);
         }
       }
@@ -67,7 +67,7 @@ export function UpdateUser(_: UpdateUserProps) {
   };
 
   return (
-    <div className="p-6 pr-12 flex flex-col gap-6 border-l border-l-[rgba(35,_35,_33,_0.2)]">
+    <div className="p-6 pr-12 flex flex-col gap-6 ">
       <h1 className="text-2xl font-semibold leading-7">User {slug}</h1>
       <div className="flex justify-between">
         <div className="flex">
@@ -79,7 +79,7 @@ export function UpdateUser(_: UpdateUserProps) {
       <form onSubmit={handleSubmit(handleChangeRoleUser)} className="flex-1">
         <div className="flex flex-col gap-5 lg:gap-10 lg:mt-10 mt-5 px-4">
           <div className="flex lg:flex-row flex-col items-end gap-5 lg:gap-10">
-            {!isCustomer && (
+            {watchRole && !isCustomer && (
               <div className="flex-1 flex flex-col gap-3">
                 <Label htmlFor="idRole">Role</Label>
                 <div className="flex flex-wrap gap-5">
