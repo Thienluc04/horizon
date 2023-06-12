@@ -40,7 +40,6 @@ export default function ListProductPage() {
   useEffect(() => {
     async function fetchData() {
       await dispatch(productAction.fetchProductList(currentParams));
-      setCurentPage(1);
     }
     fetchData();
   }, [currentParams]);

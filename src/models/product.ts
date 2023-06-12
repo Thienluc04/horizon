@@ -29,7 +29,7 @@ export interface ProductInput {
   CurrentPriceInput: string;
   OldPriceInput?: string;
   dateDiscountInput?: string;
-  UrlImageProductInput: string;
+  urlImageProductInput: string;
 }
 
 export interface FilterProduct {

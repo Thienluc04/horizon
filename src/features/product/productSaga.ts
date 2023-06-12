@@ -8,10 +8,10 @@ import { productAction } from './productSlice';
 
 function* handleFetchProduct(action: PayloadAction<ListParams>) {
   try {
-    yield put(productAction.setParams(action.payload));
     const response: Response<Product[]> = yield call(productApi.getAll, action.payload);
     if (response.data) {
       yield put(productAction.fetchProductListSuccess(response));
+      yield put(productAction.setParams(action.payload));
     }
   } catch (error) {
     yield put(productAction.fetchProductListFailed());

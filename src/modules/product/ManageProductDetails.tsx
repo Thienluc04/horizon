@@ -217,7 +217,7 @@ export function ManageProductDetails(_: DetailsProductProps) {
               IDTradeMarkInput: values.idTrademark,
               NameInput: values.name,
               SlugInput: values.slug,
-              UrlImageProductInput: values.image,
+              urlImageProductInput: values.image,
               IdSpecificationsInput: values.idSpecifications,
             })
           );
@@ -229,7 +229,7 @@ export function ManageProductDetails(_: DetailsProductProps) {
               CurrentPriceInput: values.currentPrice,
               NameInput: values.name,
               SlugInput: values.slug,
-              UrlImageProductInput: values.image,
+              urlImageProductInput: values.image,
               IdSpecificationsInput: values.idSpecifications,
             })
           );
@@ -245,7 +245,7 @@ export function ManageProductDetails(_: DetailsProductProps) {
               IDTradeMarkInput: values.idTrademark,
               NameInput: values.name,
               SlugInput: values.slug,
-              UrlImageProductInput: values.image,
+              urlImageProductInput: values.image,
             })
           );
           updateDetailConfiguration();
@@ -256,7 +256,7 @@ export function ManageProductDetails(_: DetailsProductProps) {
               CurrentPriceInput: values.currentPrice,
               NameInput: values.name,
               SlugInput: values.slug,
-              UrlImageProductInput: values.image,
+              urlImageProductInput: values.image,
             })
           );
           updateDetailConfiguration();

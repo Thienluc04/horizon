@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { Cart } from 'models';
 import { put, select, takeEvery } from 'redux-saga/effects';
 import { ChangeCartItem, cartActions, selectListCart } from './cartSlice';
+import { toast } from 'react-toastify';
 
 function* handleIncrementCart({ payload }: PayloadAction<ChangeCartItem>) {
   const list: Cart[] = yield select(selectListCart);
@@ -15,6 +16,7 @@ function* handleIncrementCart({ payload }: PayloadAction<ChangeCartItem>) {
     yield put(cartActions.setListCart(newList));
   } else {
     yield put(cartActions.setListCart([...list, payload.cart]));
+    toast.success('You just add product to cart');
   }
 }
 

@@ -3,9 +3,7 @@ import { cartActions } from 'features/cart/cartSlice';
 import { productAction } from 'features/product/productSlice';
 import { ListParams, Product } from 'models';
 import { useState } from 'react';
-import { useCookies } from 'react-cookie';
-import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 export interface ProductItemProps {
@@ -17,9 +15,6 @@ export interface ProductItemProps {
 
 export function ProductItem({ product, params, className = '', dashboard }: ProductItemProps) {
   const dispatch = useAppDispatch();
-
-  const [cookies] = useCookies(['currentUser']);
-  const currentUser = cookies.currentUser;
 
   const handleDeleteProduct = async () => {
     Swal.fire({
@@ -40,31 +35,24 @@ export function ProductItem({ product, params, className = '', dashboard }: Prod
   };
   const [quantity, setQuantity] = useState(1);
 
-  const navigate = useNavigate();
-
   const handleAddToCart = () => {
-    if (currentUser) {
-      if (product) {
-        dispatch(
-          cartActions.incrementItemCart({
-            cart: {
-              category: product.Category,
-              id: Number(product.idProduct),
-              image: product.image,
-              name: product.NameProduct,
-              price: product.CurrentPrice,
-              quantity: quantity,
-              trademark: product.TradeMark,
-            },
-            quantity: 1,
-          })
-        );
-      }
-      setQuantity(quantity + 1);
-    } else {
-      toast.warning('You are not logged in!');
-      navigate('/login');
+    if (product) {
+      dispatch(
+        cartActions.incrementItemCart({
+          cart: {
+            category: product.Category,
+            id: Number(product.idProduct),
+            image: product.image,
+            name: product.NameProduct,
+            price: product.CurrentPrice,
+            quantity: quantity,
+            trademark: product.TradeMark,
+          },
+          quantity: 1,
+        })
+      );
     }
+    setQuantity(quantity + 1);
   };
 
   return (

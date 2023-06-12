@@ -186,10 +186,10 @@ export function CreateProduct(_: CreateProductProps) {
             CurrentPriceInput: values.currentPrice,
             idCategoryInput: values.idCategory,
             IdSpecificationsInput: speId + '',
-            IDTradeMarkInput: values.idCategory,
+            IDTradeMarkInput: values.idTrademark,
             NameInput: values.name,
             SlugInput: values.slug,
-            UrlImageProductInput: values.image,
+            urlImageProductInput: values.image,
           })
         );
         reset({
@@ -198,6 +198,7 @@ export function CreateProduct(_: CreateProductProps) {
           currentPrice: '',
         });
         setImageUrl('');
+        setCurrentSpe('Choose Specifications');
       } else {
         toast.error('Please choose the specifications!');
       }

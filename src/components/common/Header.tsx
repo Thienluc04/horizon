@@ -244,6 +244,13 @@ export function Header({}: HeaderProps) {
           </form>
         </div>
         <div className="flex items-center gap-3">
+          <Link to={'/cart'} className="flex flex-col items-center gap-1 relative">
+            <div className="absolute top-[-15%] right-0 min-w-[16px] h-4 p-1 rounded-lg text-xs bg-red text-white flex justify-center items-center">
+              {listCart.length}
+            </div>
+            <img src="/images/cart-icon.svg" alt="" />
+            <p className="text-gray5 text-xs">My cart</p>
+          </Link>
           {currentUser ? (
             <>
               <div className="relative cursor-pointer" onClick={handleShowDropMenu}>
@@ -262,13 +269,7 @@ export function Header({}: HeaderProps) {
                   </Link>
                 </div>
               </div>
-              <Link to={'/cart'} className="flex flex-col items-center gap-1 relative">
-                <div className="absolute top-[-15%] right-0 min-w-[16px] h-4 p-1 rounded-lg text-xs bg-red text-white flex justify-center items-center">
-                  {listCart.length}
-                </div>
-                <img src="/images/cart-icon.svg" alt="" />
-                <p className="text-gray5 text-xs">My cart</p>
-              </Link>
+
               <div
                 onClick={() => handleLogOut()}
                 className="cursor-pointer flex flex-col items-center gap-1"

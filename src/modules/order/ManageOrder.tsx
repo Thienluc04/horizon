@@ -49,7 +49,7 @@ export function ManageOrder(_: ManageOrderProps) {
               <p className="font-bold text-[#232321CC] text-center">Actions</p>
             </div>
           </div>
-          {orderList?.map((order, index) => {
+          {orderList?.map((order, _) => {
             // if (index < 5) {
             return (
               <div key={order.ID} className="flex justify-between items-center">
