@@ -2,6 +2,7 @@ import { useAppDispatch } from 'app/hooks';
 import { authAction } from 'features/auth/authSlice';
 import { useCookies } from 'react-cookie';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { role } from 'utils/constant';
 
 export interface SidebarProps {}
 
@@ -10,7 +11,9 @@ export function Sidebar(_: SidebarProps) {
 
   const dispatch = useAppDispatch();
 
-  const [, , removeCookies] = useCookies(['currentUser']);
+  const [cookies, , removeCookies] = useCookies(['currentUser']);
+
+  const currentUser = cookies.currentUser;
 
   const navigate = useNavigate();
 
@@ -140,7 +143,7 @@ export function Sidebar(_: SidebarProps) {
       </Link>
       <div className="flex flex-col gap-4 max-w-[212px] mx-auto">
         {listPath.map((item) => {
-          if (!item.path)
+          if (!item.path) {
             return (
               <div
                 key={item.id}
@@ -163,29 +166,54 @@ export function Sidebar(_: SidebarProps) {
                 </p>
               </div>
             );
-
-          return (
-            <Link
-              key={item.id}
-              to={item.path}
-              className={`h-12 ${
-                pathname === item.path ? 'bg-dashboardSecondary' : ''
-              } rounded-lg flex gap-4 justify-start items-center pl-[18px]`}
-            >
-              <span
-                className={`${pathname === item.path ? 'text-white' : 'text-dashboardPrimary'}`}
+          } else if (item.id === 4) {
+            if (currentUser.idRole !== role.ADMIN) return;
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
+                className={`h-12 ${
+                  pathname === item.path ? 'bg-dashboardSecondary' : ''
+                } rounded-lg flex gap-4 justify-start items-center pl-[18px]`}
               >
-                {item.icon}
-              </span>
-              <p
-                className={`uppercase text-sm ${
-                  pathname === item.path ? 'text-white' : 'text-[#232321]'
-                } font-medium`}
+                <span
+                  className={`${pathname === item.path ? 'text-white' : 'text-dashboardPrimary'}`}
+                >
+                  {item.icon}
+                </span>
+                <p
+                  className={`uppercase text-sm ${
+                    pathname === item.path ? 'text-white' : 'text-[#232321]'
+                  } font-medium`}
+                >
+                  {item.name}
+                </p>
+              </Link>
+            );
+          } else {
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
+                className={`h-12 ${
+                  pathname === item.path ? 'bg-dashboardSecondary' : ''
+                } rounded-lg flex gap-4 justify-start items-center pl-[18px]`}
               >
-                {item.name}
-              </p>
-            </Link>
-          );
+                <span
+                  className={`${pathname === item.path ? 'text-white' : 'text-dashboardPrimary'}`}
+                >
+                  {item.icon}
+                </span>
+                <p
+                  className={`uppercase text-sm ${
+                    pathname === item.path ? 'text-white' : 'text-[#232321]'
+                  } font-medium`}
+                >
+                  {item.name}
+                </p>
+              </Link>
+            );
+          }
         })}
       </div>
     </div>

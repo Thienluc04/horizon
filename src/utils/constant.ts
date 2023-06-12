@@ -26,3 +26,13 @@ export const active = {
   PUBLIC: 1,
   PRIVATE: 2,
 };
+
+export const kindSpe = {
+  CPU: 1,
+  VGA: 2,
+  RAM: 3,
+  SCREEN: 4,
+  OS: 5,
+  COLOR: 6,
+  DISK: 7,
+};

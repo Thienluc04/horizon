@@ -1,21 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import userApi from 'api/userApi';
 import { Button } from 'components/button';
+import { Radio } from 'components/checkbox';
+import { ImageUpload } from 'components/common/ImageUpload';
 import { Input } from 'components/input';
 import { Label } from 'components/label';
-import { useCookies } from 'react-cookie';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import * as yup from 'yup';
-import NotFountPage from './NotFoundPage';
-import { CurrentUser, Profile, Response } from 'models';
-import { Radio } from 'components/checkbox';
-import { gender, status } from 'utils/constant';
-import { ImageUpload } from 'components/common/ImageUpload';
-import userApi from 'api/userApi';
-import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
 import { storage } from 'firebase/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { CurrentUser, Profile } from 'models';
 import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { gender, status } from 'utils/constant';
+import * as yup from 'yup';
+import NotFountPage from './NotFoundPage';
 
 export interface ProfilePageProps {}
 
@@ -55,9 +55,9 @@ export default function ProfilePage(_: ProfilePageProps) {
   useEffect(() => {
     (async () => {
       if (currentUser) {
-        const response: Response<Profile> = await userApi.getProfile(currentUser.username);
-        reset(response.data);
-        setImgUrl(response.data.urlAvata);
+        const data: Profile = await userApi.getProfile(currentUser.username);
+        reset(data);
+        setImgUrl(data.urlAvata);
       }
     })();
   }, []);
@@ -101,7 +101,7 @@ export default function ProfilePage(_: ProfilePageProps) {
       urlAvata: values.urlAvata,
     });
 
-    if (response.data === status.OK) {
+    if (response === status.OK) {
       toast.success('Update profile success');
       setCookies('currentUser', {
         idRole: currentUser.idRole,

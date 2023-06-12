@@ -1,4 +1,5 @@
 import authSaga from 'features/auth/authSaga';
+import cartSaga from 'features/cart/cartSaga';
 import categorySaga from 'features/category/categorySaga';
 import detailConfigSaga from 'features/detailConfig/detailConfigSaga';
 import productSaga from 'features/product/productSaga';
@@ -14,5 +15,6 @@ export default function* rootSaga() {
     categorySaga(),
     trademarkSaga(),
     detailConfigSaga(),
+    cartSaga(),
   ]);
 }

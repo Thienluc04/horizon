@@ -1,11 +1,13 @@
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { Button } from 'components/button';
-import { FormEvent, useRef } from 'react';
+import { authAction } from 'features/auth/authSlice';
+import { cartActions, selectListCart } from 'features/cart/cartSlice';
+import { productAction, selectParamsProduct } from 'features/product/productSlice';
+import { Cart, CurrentUser } from 'models';
+import { FormEvent, useEffect, useRef } from 'react';
+import { useCookies } from 'react-cookie';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Navigation } from '.';
-import { useCookies } from 'react-cookie';
-import { useAppDispatch } from 'app/hooks';
-import { authAction } from 'features/auth/authSlice';
-import { CurrentUser } from 'models';
 
 export interface HeaderProps {}
 
@@ -22,6 +24,24 @@ export function Header({}: HeaderProps) {
   const [cookies, , removeCookies] = useCookies(['currentUser']);
 
   const currentUser: CurrentUser = cookies.currentUser;
+
+  const params = useAppSelector(selectParamsProduct);
+  const listCart = useAppSelector(selectListCart);
+
+  useEffect(() => {
+    if (listCart.length > 0) {
+      localStorage.setItem('my_cart', JSON.stringify(listCart));
+    }
+  }, [listCart]);
+
+  useEffect(() => {
+    if (localStorage.getItem('my_cart')) {
+      const mycart: Cart[] = Array.from(JSON.parse(String(localStorage.getItem('my_cart'))));
+      if (mycart) {
+        dispatch(cartActions.setListCart(mycart));
+      }
+    }
+  }, []);
 
   const hanldeOpenMenu = () => {
     if (menuRef.current && labelRef.current) {
@@ -47,9 +67,13 @@ export function Header({}: HeaderProps) {
     }
   };
 
-  const hanldeSubmitSearch = (e: FormEvent<HTMLFormElement>) => {
+  const hanldeSubmitSearch = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(inputRef.current);
+    const input = inputRef.current;
+    if (params) {
+      await dispatch(productAction.fetchProductList({ ...params, keyWord: input?.value }));
+      navigate('/products');
+    }
   };
 
   const handleLogOut = async () => {
@@ -224,7 +248,7 @@ export function Header({}: HeaderProps) {
             <>
               <div className="relative cursor-pointer" onClick={handleShowDropMenu}>
                 <div className="flex items-center">
-                  <div className="flex flex-col items-center gap-1 relative">
+                  <Link to={'/profile'} className="flex flex-col items-center gap-1 relative">
                     <img
                       src={`${
                         currentUser.urlAvata.length > 0
@@ -235,46 +259,16 @@ export function Header({}: HeaderProps) {
                       alt=""
                     />
                     <p className="text-gray5 text-xs">{currentUser.username}</p>
-                  </div>
-                  <span className="-translate-y-2/4 -translate-x-2/4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 20 20"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-3 h-3"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                      />
-                    </svg>
-                  </span>
-                </div>
-                <div
-                  ref={dropdownRef}
-                  className="hidden absolute top-[100%] rounded-lg left-[50%] p-3 -translate-x-2/4 bg-white w-[100px] border border-gray-300 list-none"
-                >
-                  <div className="flex flex-col gap-2">
-                    <li>
-                      <Link to={'/profile'}>Profile</Link>
-                    </li>
-                  </div>
+                  </Link>
                 </div>
               </div>
-              {/* Cart */}
-              {/* <Link
-                to={"/cart"}
-                className="flex flex-col items-center gap-1 relative"
-              >
-                <div className="absolute top-[-15%] right-0 h-4 w-4 bg-red text-white flex justify-center items-center rounded-lg text-sm">
-                  0
+              <Link to={'/cart'} className="flex flex-col items-center gap-1 relative">
+                <div className="absolute top-[-15%] right-0 min-w-[16px] h-4 p-1 rounded-lg text-xs bg-red text-white flex justify-center items-center">
+                  {listCart.length}
                 </div>
                 <img src="/images/cart-icon.svg" alt="" />
                 <p className="text-gray5 text-xs">My cart</p>
-              </Link> */}
+              </Link>
               <div
                 onClick={() => handleLogOut()}
                 className="cursor-pointer flex flex-col items-center gap-1"
@@ -304,23 +298,7 @@ export function Header({}: HeaderProps) {
           )}
         </div>
       </div>
-      <div className="xl:hidden flex items-center gap-2 mx-5 h-10 border border-gray3 bg-[#F7FAFC] rounded-md p-2">
-        <span>
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12.4417 11.067H11.7176L11.4609 10.8195C12.3592 9.77448 12.9001 8.41781 12.9001 6.94198C12.9001 3.65114 10.2326 0.983643 6.94173 0.983643C3.6509 0.983643 0.983398 3.65114 0.983398 6.94198C0.983398 10.2328 3.6509 12.9003 6.94173 12.9003C8.41757 12.9003 9.77423 12.3595 10.8192 11.4611L11.0667 11.7178V12.442L15.6501 17.0161L17.0159 15.6503L12.4417 11.067ZM6.94173 11.067C4.65923 11.067 2.81673 9.22448 2.81673 6.94198C2.81673 4.65948 4.65923 2.81698 6.94173 2.81698C9.22423 2.81698 11.0667 4.65948 11.0667 6.94198C11.0667 9.22448 9.22423 11.067 6.94173 11.067Z"
-              fill="#8B96A5"
-            />
-          </svg>
-        </span>
-        <input type="text" className="bg-[#F7FAFC] max-w-full" placeholder="Search" />
-      </div>
+
       <Navigation></Navigation>
     </>
   );

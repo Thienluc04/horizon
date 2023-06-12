@@ -9,6 +9,7 @@ import productReducer from 'features/product/productSlice';
 import categoryReducer from 'features/category/categorySlice';
 import trademarkReducer from 'features/trademark/trademarkSlice';
 import detailConfigReducer from 'features/detailConfig/detailConfigSlice';
+import cartReducer from 'features/cart/cartSlice';
 
 const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHistoryContext({
   history: createBrowserHistory(),
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   category: categoryReducer,
   trademark: trademarkReducer,
   detailConfig: detailConfigReducer,
+  cart: cartReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

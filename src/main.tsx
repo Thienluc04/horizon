@@ -8,6 +8,8 @@ import { history, store } from 'app/store.ts';
 import { HistoryRouter as Router } from 'redux-first-history/rr6';
 import { CookiesProvider } from 'react-cookie';
 import 'react-quill/dist/quill.snow.css';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>

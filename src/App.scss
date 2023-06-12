@@ -140,3 +140,26 @@
     }
   }
 }
+
+.slick-arrow {
+  z-index: 10;
+}
+.slick-prev:before,
+.slick-next:before {
+  font-size: 40px !important;
+  color: #6b6b6b !important;
+}
+
+.slick-prev {
+  margin-left: 10%;
+}
+
+.slick-next {
+  margin-right: 10%;
+}
+
+.hideChoose {
+  height: 0 !important;
+  opacity: 0;
+  transition: all linear 0.3s;
+}

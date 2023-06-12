@@ -496,7 +496,7 @@ export function MoreOptions({ categories }: MoreOptionProps) {
               <div
                 className={`absolute ${
                   !showCategory && 'hidden'
-                } top-[100%] z-10  left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
+                } top-[100%] z-9  left-0 right-0 bg-white max-h-[200px] overflow-auto rounded-lg customScroll border border-dashboardPrimary`}
               >
                 {categories.map((item) => (
                   <div

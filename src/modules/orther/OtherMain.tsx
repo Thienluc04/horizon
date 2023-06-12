@@ -8,7 +8,7 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import slugify from 'slugify';
 
 export function OtherMain() {
-  const { control, watch, handleSubmit } = useForm({ mode: 'onSubmit' });
+  const { control, handleSubmit } = useForm({ mode: 'onSubmit' });
 
   const [currentCategory, setCurrentCategory] = useState<string>('Category');
   const [showCategory, setShowCategory] = useState<boolean>(false);

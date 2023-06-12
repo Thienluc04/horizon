@@ -16,7 +16,7 @@ import { ProductItem, ProductList } from '.';
 
 export interface ManageProductProps {}
 
-const ITEM_PER_PAGE = 4;
+const ITEM_PER_PAGE = 8;
 
 export function ManageProduct(_: ManageProductProps) {
   const [currentTrademark, setCurrentTradeMark] = useState<string>('All Trademark');
@@ -284,7 +284,12 @@ export function ManageProduct(_: ManageProductProps) {
       <ProductList>
         {!loading &&
           products.map((product) => (
-            <ProductItem params={params} key={product.idProduct} product={product}></ProductItem>
+            <ProductItem
+              dashboard
+              params={params}
+              key={product.idProduct}
+              product={product}
+            ></ProductItem>
           ))}
       </ProductList>
       {!loading && products.length <= 0 && (

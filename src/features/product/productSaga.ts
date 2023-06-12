@@ -1,13 +1,14 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { productAction } from './productSlice';
-import { FilterProduct, ListParams, Product, ProductInput, Response } from 'models';
-import productApi from 'api/productApi';
 import { PayloadAction } from '@reduxjs/toolkit';
+import productApi from 'api/productApi';
+import { ListParams, Product, ProductInput, Response } from 'models';
 import { toast } from 'react-toastify';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { status } from 'utils/constant';
+import { productAction } from './productSlice';
 
 function* handleFetchProduct(action: PayloadAction<ListParams>) {
   try {
+    yield put(productAction.setParams(action.payload));
     const response: Response<Product[]> = yield call(productApi.getAll, action.payload);
     if (response.data) {
       yield put(productAction.fetchProductListSuccess(response));

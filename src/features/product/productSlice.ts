@@ -1,6 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { ListParams, PaginationParams, Product, ProductInput, Response } from 'models';
+import { active } from 'utils/constant';
 
 export interface ProductState {
   loading: boolean;
@@ -8,6 +9,7 @@ export interface ProductState {
   idProduct: string | number;
   currentProduct?: Product;
   pagination: PaginationParams;
+  params: ListParams;
 }
 
 const initialState: ProductState = {
@@ -18,6 +20,11 @@ const initialState: ProductState = {
     _limit: 8,
     _page: 1,
     _totalRows: 8,
+  },
+  params: {
+    limit: 6,
+    page: 1,
+    idStatusProductInput: active.PUBLIC,
   },
 };
 
@@ -54,6 +61,9 @@ const productSlice = createSlice({
     setCurrentProduct(state, action: PayloadAction<Product>) {
       state.currentProduct = action.payload;
     },
+    setParams(state, action: PayloadAction<ListParams>) {
+      state.params = action.payload;
+    },
   },
 });
 
@@ -66,6 +76,7 @@ export const selectProductLoading = (state: RootState) => state.product.loading;
 export const selectIdProduct = (state: RootState) => state.product.idProduct;
 export const selectCurrentProduct = (state: RootState) => state.product.currentProduct;
 export const selectPaginationProduct = (state: RootState) => state.product.pagination;
+export const selectParamsProduct = (state: RootState) => state.product.params;
 
 // Reducers
 const productReducer = productSlice.reducer;

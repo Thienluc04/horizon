@@ -2,16 +2,27 @@ import { specificationsApi } from 'api/specificationsApi';
 import { Button } from 'components/button';
 import { Specifications } from 'models';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { kindSpe } from 'utils/constant';
 
 export interface SelectProps {
   className?: string;
   title: string;
-  setValue: Dispatch<SetStateAction<string>>;
+  setValue?: Dispatch<SetStateAction<string>>;
   action: Promise<Specifications[]>;
-  kind: number;
+  kind?: number;
+  onSelect?: (name: string) => void;
+  isReset?: boolean;
 }
 
-export function Select({ className = '', title, setValue, action, kind }: SelectProps) {
+export function Select({
+  className = '',
+  title,
+  action = new Promise(() => {}),
+  kind,
+  setValue = () => {},
+  onSelect = (_: string) => {},
+  isReset,
+}: SelectProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [showValue, setShowValue] = useState<boolean>(false);
@@ -30,32 +41,31 @@ export function Select({ className = '', title, setValue, action, kind }: Select
     const input = inputRef.current;
     const value = input?.value;
     switch (kind) {
-      case 1:
-        console.log(kind);
+      case kindSpe.CPU:
         const cpus: Specifications[] = await specificationsApi.getCpus(value);
         setList(cpus);
         break;
-      case 2:
+      case kindSpe.VGA:
         const vgas: Specifications[] = await specificationsApi.getVgas(value);
         setList(vgas);
         break;
-      case 3:
+      case kindSpe.RAM:
         const rams: Specifications[] = await specificationsApi.getRams(value);
         setList(rams);
         break;
-      case 4:
+      case kindSpe.SCREEN:
         const screens: Specifications[] = await specificationsApi.getScreens(value);
         setList(screens);
         break;
-      case 5:
+      case kindSpe.OS:
         const os: Specifications[] = await specificationsApi.getOS(value);
         setList(os);
         break;
-      case 6:
+      case kindSpe.COLOR:
         const colors: Specifications[] = await specificationsApi.getColors(value);
         setList(colors);
         break;
-      case 7:
+      case kindSpe.DISK:
         const disks: Specifications[] = await specificationsApi.getDisks(value);
         setList(disks);
         break;
@@ -64,6 +74,12 @@ export function Select({ className = '', title, setValue, action, kind }: Select
         break;
     }
   };
+
+  useEffect(() => {
+    if (isReset) {
+      setCurrentValue(title);
+    }
+  }, [isReset]);
 
   return (
     <div className={`flex flex-col gap-2 flex-1 ${className}`}>
@@ -108,8 +124,9 @@ export function Select({ className = '', title, setValue, action, kind }: Select
               key={item.ID}
               onClick={() => {
                 setCurrentValue(item.name);
-                setValue(item.ID + '');
+                setValue(item.ID);
                 setShowValue(false);
+                onSelect(item.name);
               }}
               className="py-2 hover:bg-dashboardPrimary hover:text-white text-center text-sm cursor-pointer"
             >

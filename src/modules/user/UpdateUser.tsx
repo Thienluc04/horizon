@@ -4,12 +4,12 @@ import { Button } from 'components/button';
 import { Radio } from 'components/checkbox';
 import { Label } from 'components/label';
 import { userAction } from 'features/user/userSlice';
-import { Profile, Response } from 'models';
+import { Profile } from 'models';
 import { useEffect, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import { role, status } from 'utils/constant';
+import { role } from 'utils/constant';
 
 export interface UpdateUserProps {}
 

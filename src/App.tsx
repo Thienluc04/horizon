@@ -12,6 +12,9 @@ import { UpdateUser, CreateUser, ManageUser } from 'modules/user';
 import { ManageOrder, ManageOrderDetails } from 'modules/order';
 import { ManageProductDetails, ManageProduct, CreateProduct } from 'modules/product';
 import { OtherMain } from 'modules/orther';
+import ListProductPage from 'pages/ListProductPage';
+import ProductDetailPage from 'pages/ProductDetailPage';
+import CartPage from 'pages/CartPage';
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
           <Route path="/" element={<HomePage></HomePage>}></Route>
           <Route path="/profile" element={<ProfilePage></ProfilePage>}></Route>
           <Route path="/profile/password" element={<ChangePassPage></ChangePassPage>}></Route>
+          <Route path="/products" element={<ListProductPage></ListProductPage>}></Route>
+          <Route path="/products/:slug" element={<ProductDetailPage></ProductDetailPage>}></Route>
+          <Route path="/cart" element={<CartPage></CartPage>}></Route>
         </Route>
 
         <Route element={<DashboardLayout></DashboardLayout>}>
