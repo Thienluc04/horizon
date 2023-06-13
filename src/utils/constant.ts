@@ -36,3 +36,13 @@ export const kindSpe = {
   COLOR: 6,
   DISK: 7,
 };
+
+export const statusBooking = {
+  ORDER: 1,
+  PAID: 2,
+  ORDER_SUCCESS: 3,
+  SHIPPING: 4,
+  SHIP_SUCCESS: 5,
+  SHIP_FAILED: 6,
+  ORDER_FAILED: 7,
+};

@@ -47,8 +47,11 @@ export function ProductItem({ product, params, className = '', dashboard }: Prod
             price: product.CurrentPrice,
             quantity: quantity,
             trademark: product.TradeMark,
+            priceProduct: product.CurrentPrice,
+            slug: product.Slug,
           },
           quantity: 1,
+          price: product.CurrentPrice,
         })
       );
     }

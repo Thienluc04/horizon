@@ -15,6 +15,7 @@ const initialState: CartState = {
 export interface ChangeCartItem {
   cart: Cart;
   quantity: number;
+  price: string;
 }
 
 const cartSlice = createSlice({
@@ -22,6 +23,7 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     incrementItemCart(_, __: PayloadAction<ChangeCartItem>) {},
+    incrementItemCartDetail(_, __: PayloadAction<ChangeCartItem>) {},
     decrementItemCart(_, __: PayloadAction<Cart>) {},
     setQuantity(state, action: PayloadAction<number>) {
       state.quantity = action.payload;

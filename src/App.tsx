@@ -15,6 +15,7 @@ import { OtherMain } from 'modules/orther';
 import ListProductPage from 'pages/ListProductPage';
 import ProductDetailPage from 'pages/ProductDetailPage';
 import CartPage from 'pages/CartPage';
+import { ManageDepot } from 'modules/depot';
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
 
           <Route path="/dashboard/users/createUser" element={<CreateUser></CreateUser>}></Route>
           <Route path="/dashboard/users/:slug" element={<UpdateUser></UpdateUser>}></Route>
+
+          <Route path="/dashboard/depot" element={<ManageDepot></ManageDepot>}></Route>
 
           <Route
             path="/dashboard/orders/:slug"

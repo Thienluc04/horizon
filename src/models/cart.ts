@@ -6,4 +6,6 @@ export interface Cart {
   category: string;
   trademark: string;
   quantity: number;
+  priceProduct: string;
+  slug: string;
 }

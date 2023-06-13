@@ -1,18 +1,29 @@
-import { Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 export interface QuantityProps {
   quantity: number;
   setQuantity: Dispatch<SetStateAction<number>>;
+  max: number;
 }
 
-export function Quantity({ quantity, setQuantity }: QuantityProps) {
+export function Quantity({ quantity, setQuantity, max }: QuantityProps) {
   const quantityIncrement = () => {
-    setQuantity(quantity + 1);
+    if (quantity < max) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const quantityDecrement = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
+    }
+  };
+
+  const handleChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+    if (Number(e.target.value) > 1 && Number(e.target.value) < max) {
+      setQuantity(Number(e.target.value));
+    } else if (Number(e.target.value) > 1 && Number(e.target.value) > max) {
+      setQuantity(max);
     }
   };
   return (
@@ -27,7 +38,7 @@ export function Quantity({ quantity, setQuantity }: QuantityProps) {
       <input
         type="number"
         value={quantity}
-        onChange={(e) => setQuantity(Number(e.target.value))}
+        onChange={(e) => handleChangeQuantity(e)}
         className={`text-center max-w-[50px] h-8 border border-primary`}
       />
       <button

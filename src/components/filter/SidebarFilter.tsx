@@ -5,8 +5,8 @@ import { Checkbox } from 'components/checkbox';
 import { Select } from 'components/select';
 import { categoryActions, selectCategoryList } from 'features/category/categorySlice';
 import { selectTrademarkList, trademarkActions } from 'features/trademark/trademarkSlice';
-import { ListParams } from 'models';
-import { useEffect, useState } from 'react';
+import { ListParams, Specifications } from 'models';
+import { memo, useEffect, useState } from 'react';
 import { active, kindSpe } from 'utils/constant';
 import { ChooseFilter } from '.';
 
@@ -15,21 +15,89 @@ export interface SidebarFillterProps {
   setParams: (params: ListParams) => {};
 }
 
-export function SidebarFilter({ params, setParams }: SidebarFillterProps) {
+function SidebarFilterFunc({ params, setParams }: SidebarFillterProps) {
   const dispatch = useAppDispatch();
 
   const categories = useAppSelector(selectCategoryList);
   const trademarks = useAppSelector(selectTrademarkList);
 
+  const [cpuList, setCpuList] = useState<Specifications[]>();
+  const [ramList, setRamList] = useState<Specifications[]>();
+  const [diskList, setDiskList] = useState<Specifications[]>();
+  const [vgaList, setVgaList] = useState<Specifications[]>();
+  const [screenList, setScreenList] = useState<Specifications[]>();
+  const [colorList, setColorList] = useState<Specifications[]>();
+  const [osList, setOSList] = useState<Specifications[]>();
+
   useEffect(() => {
-    async function fetchData() {
-      await dispatch(categoryActions.fetchCategoryList());
-    }
-    fetchData();
+    dispatch(categoryActions.fetchCategoryList());
   }, []);
 
   useEffect(() => {
     dispatch(trademarkActions.fetchTrademarkList());
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getCpus();
+      setCpuList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getRams();
+      setRamList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getDisks();
+      setDiskList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getVgas();
+      setVgaList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getScreens();
+      setScreenList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getColors();
+      setColorList(data);
+    }
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await specificationsApi.getOS();
+      setOSList(data);
+    }
+
+    fetchData();
   }, []);
 
   const [checkedCategory, setCheckedCategory] = useState<number>(0);
@@ -80,66 +148,66 @@ export function SidebarFilter({ params, setParams }: SidebarFillterProps) {
       <ChooseFilter isHide={true} title="Specifications" className="h-auto">
         <Select
           title={'Cpu'}
-          action={specificationsApi.getCpus()}
           kind={kindSpe.CPU}
           onSelect={(name) => {
             setParams({ ...params, nameCpuInput: name });
           }}
           isReset={isReset}
+          data={cpuList}
         ></Select>
         <Select
           title={'Ram'}
-          action={specificationsApi.getRams()}
           kind={kindSpe.RAM}
           onSelect={(name) => {
             setParams({ ...params, nameRamInput: name });
           }}
           isReset={isReset}
+          data={ramList}
         ></Select>
         <Select
           title={'Disk'}
-          action={specificationsApi.getDisks()}
           kind={kindSpe.DISK}
           onSelect={(name) => {
             setParams({ ...params, nameDiskInput: name });
           }}
           isReset={isReset}
+          data={diskList}
         ></Select>
         <Select
           title={'Vga'}
-          action={specificationsApi.getVgas()}
           kind={kindSpe.VGA}
           onSelect={(name) => {
             setParams({ ...params, nameVgaInput: name });
           }}
           isReset={isReset}
+          data={vgaList}
         ></Select>
         <Select
           title={'Screen'}
-          action={specificationsApi.getScreens()}
           kind={kindSpe.SCREEN}
           onSelect={(name) => {
             setParams({ ...params, nameScreenInput: name });
           }}
           isReset={isReset}
+          data={screenList}
         ></Select>
         <Select
           title={'Color'}
-          action={specificationsApi.getColors()}
           kind={kindSpe.COLOR}
           onSelect={(name) => {
             setParams({ ...params, nameColorInput: name });
           }}
           isReset={isReset}
+          data={colorList}
         ></Select>
         <Select
           title={'OS'}
-          action={specificationsApi.getOS()}
           kind={kindSpe.OS}
           onSelect={(name) => {
             setParams({ ...params, nameOsInput: name });
           }}
           isReset={isReset}
+          data={osList}
         ></Select>
       </ChooseFilter>
       <Button onClick={handleResetFilter} className="mx-auto">
@@ -148,3 +216,5 @@ export function SidebarFilter({ params, setParams }: SidebarFillterProps) {
     </div>
   );
 }
+
+export const SidebarFilter = memo(SidebarFilterFunc);

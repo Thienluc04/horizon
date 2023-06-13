@@ -19,6 +19,9 @@ export interface CurrentUser {
   idRole: string;
   username: string;
   urlAvata: string;
+  ID: string;
+  email: string;
+  PhoneNumber: string;
 }
 
 export interface LoginResponse {

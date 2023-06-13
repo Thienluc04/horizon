@@ -9,7 +9,6 @@ import { authAction } from './authSlice';
 
 function* handleAuthLogin(action: PayloadAction<Login>) {
   const response: CurrentUser = yield call(authApi.login, action.payload);
-  console.log('function*handleAuthLogin ~ response:', response);
   if (response?.username) {
     yield put(authAction.authLoginSuccess(response));
     yield put(push('/'));

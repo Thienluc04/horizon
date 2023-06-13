@@ -1,3 +1,4 @@
+import { depotApi } from 'api/depotApi';
 import { detailConfigApi } from 'api/detailConfigApi';
 import productApi from 'api/productApi';
 import { useAppDispatch } from 'app/hooks';
@@ -6,6 +7,7 @@ import { Quantity } from 'components/common';
 import { cartActions } from 'features/cart/cartSlice';
 import parse from 'html-react-parser';
 import { Product } from 'models';
+import { Depot } from 'models/depot';
 import { ProductItem, ProductList } from 'modules/product';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
@@ -19,6 +21,7 @@ export default function ProductDetailPage() {
   const [content, setContent] = useState<any>();
 
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [depot, setDepot] = useState<Depot>();
 
   const dispatch = useAppDispatch();
 
@@ -54,10 +57,20 @@ export default function ProductDetailPage() {
     })();
   }, [product]);
 
+  useEffect(() => {
+    if (product) {
+      async function fetchData() {
+        const data = await depotApi.getDepotByIdProduct(product?.idProduct + '');
+        setDepot(data);
+      }
+      fetchData();
+    }
+  }, [product]);
+
   const handleAddToCart = () => {
     if (product) {
       dispatch(
-        cartActions.incrementItemCart({
+        cartActions.incrementItemCartDetail({
           cart: {
             category: product.Category,
             id: Number(product.idProduct),
@@ -66,12 +79,16 @@ export default function ProductDetailPage() {
             price: product.CurrentPrice,
             quantity: quantity,
             trademark: product.TradeMark,
+            priceProduct: product.CurrentPrice,
+            slug: product.Slug,
           },
           quantity: quantity,
+          price: product.CurrentPrice,
         })
       );
     }
   };
+
   return (
     <>
       {product && (
@@ -99,7 +116,17 @@ export default function ProductDetailPage() {
                     currency: 'VND',
                   })}
                 </span>
-                <Quantity quantity={quantity} setQuantity={setQuantity}></Quantity>
+                <div className="flex gap-10 items-center">
+                  <Quantity
+                    max={Number(depot?.quantily)}
+                    quantity={quantity}
+                    setQuantity={setQuantity}
+                  ></Quantity>
+                  <div className="flex gap-3">
+                    <p>Amount:</p>
+                    <p className="text-primary">{depot?.quantily}</p>
+                  </div>
+                </div>
                 <div className="flex flex-col gap-5">
                   <div className="flex justify-between">
                     <div className="flex gap-2 flex-1 items-center">

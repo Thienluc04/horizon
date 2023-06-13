@@ -1,20 +1,21 @@
 import { specificationsApi } from 'api/specificationsApi';
 import { Button } from 'components/button';
 import { Specifications } from 'models';
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, memo, useEffect, useRef, useState } from 'react';
 import { kindSpe } from 'utils/constant';
 
 export interface SelectProps {
   className?: string;
   title: string;
   setValue?: Dispatch<SetStateAction<string>>;
-  action: Promise<Specifications[]>;
+  action?: Promise<Specifications[]>;
   kind?: number;
   onSelect?: (name: string) => void;
   isReset?: boolean;
+  data?: Specifications[];
 }
 
-export function Select({
+function SelectFunc({
   className = '',
   title,
   action = new Promise(() => {}),
@@ -22,6 +23,7 @@ export function Select({
   setValue = () => {},
   onSelect = (_: string) => {},
   isReset,
+  data = [],
 }: SelectProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -31,11 +33,19 @@ export function Select({
   const [list, setList] = useState<Specifications[]>();
 
   useEffect(() => {
-    (async () => {
-      const data: Specifications[] = await action;
-      setList(data);
-    })();
+    if (action) {
+      (async () => {
+        const data: Specifications[] = await action;
+        setList(data);
+      })();
+    }
   }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setList(data);
+    }
+  }, [data]);
 
   const handleSearchItem = async () => {
     const input = inputRef.current;
@@ -138,3 +148,5 @@ export function Select({
     </div>
   );
 }
+
+export const Select = memo(SelectFunc);

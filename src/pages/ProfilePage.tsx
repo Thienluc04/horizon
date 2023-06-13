@@ -107,6 +107,8 @@ export default function ProfilePage(_: ProfilePageProps) {
         idRole: currentUser.idRole,
         urlAvata: values.urlAvata,
         username: currentUser.username,
+        ID: currentUser.ID,
+        email: currentUser.email,
       });
     } else if (response === status.ERROR) {
       toast.error('Update profile error');

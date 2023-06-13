@@ -4,14 +4,18 @@ import { Button } from 'components/button';
 import { CartItem } from 'components/cart/CartItem';
 import { ListCartItem } from 'components/cart/ListCartItem';
 import { cartActions, selectListCart } from 'features/cart/cartSlice';
+import { BookingDetail } from 'models/order';
 import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { toast } from 'react-toastify';
-import { status } from 'utils/constant';
+import { status, statusBooking } from 'utils/constant';
 
 export default function CartPage() {
   const cartList = useAppSelector(selectListCart);
   const [totalBill, setTotalBill] = useState<number>(0);
+  const [arrayBooking, setArrayBooking] = useState<BookingDetail[]>([]);
+  const [address, setAddress] = useState<string>('');
+  const [note, setNote] = useState<string>('');
 
   const dispatch = useAppDispatch();
 
@@ -29,36 +33,50 @@ export default function CartPage() {
     dispatch(cartActions.setListCart([]));
     setTotalBill(0);
     localStorage.removeItem('my_cart');
+    setNote('');
+    setAddress('');
   };
+
+  useEffect(() => {
+    if (cartList.length > 0) {
+      const array: BookingDetail[] = [];
+      cartList.forEach((item) => {
+        array.push({
+          idProduct: String(item.id),
+          amount: String(item.quantity),
+          totalPriceOfProduct: item.price,
+        });
+      });
+      setArrayBooking(array);
+    }
+  }, [cartList]);
 
   const handleCheckoutBill = async () => {
     if (currentUser) {
-      if (cartList.length > 0) {
-        const dateNow = new Date().toISOString().split('T')[0];
-        const response = await orderApi.insertOrder({
-          idUserIput: 23,
-          idStatusBookingInput: 2,
-          nameOfBuyerInput: currentUser.username,
-          addressOfBuyerInput: 'Ha Noi',
-          phoneNumberOfBuyerInput: '0123456789',
-          emailOfBuyerInput: 'testemail@gmail.com',
-          TotalMoneyBillInput: totalBill.toString(),
-          NoteInput: 'note',
-          dateBooking: dateNow,
-          arrayBookingDetail: [
-            {
-              idProduct: '27',
-              amount: 1,
-              totalPriceOfProduct: '14000000',
-            },
-          ],
-        });
+      if (cartList.length > 0 && arrayBooking.length > 0) {
+        if (note.length > 0 && address.length > 0) {
+          const dateNow = new Date().toISOString().split('T')[0];
+          const response = await orderApi.insertOrder({
+            idUserInput: currentUser.ID,
+            idStatusBookingInput: statusBooking.PAID,
+            nameOfBuyerInput: currentUser.username,
+            addressOfBuyerInput: address,
+            phoneNumberOfBuyerInput: currentUser.PhoneNumber,
+            emailOfBuyerInput: currentUser.email,
+            TotalMoneyBillInput: totalBill.toString(),
+            NoteInput: note,
+            dateBooking: dateNow,
+            arrayBookingDetail: arrayBooking,
+          });
 
-        if (response === status.OK) {
-          toast.success('Checkout success!');
-          handleRemoveCartAll();
+          if (response === status.OK) {
+            toast.success('Checkout success!');
+            handleRemoveCartAll();
+          } else {
+            toast.error('Something went wrong');
+          }
         } else {
-          toast.error('Something went wrong');
+          toast.warning('You are not entered note or address');
         }
       }
     } else {
@@ -68,23 +86,28 @@ export default function CartPage() {
 
   return (
     <>
-      (
       <div className="bg-[#F7FAFC]">
         <div className="max-w-[1180px] mx-auto py-10 max-lg:px-3">
           <h1 className="text-2xl leading-8 text-dark">My cart ({cartList.length})</h1>
           <div className="flex gap-5 mt-6 max-lg:flex-col">
-            <div className="w-[880px] p-5 border border-gray3 rounded-md bg-white max-lg:w-full">
-              <ListCartItem>
-                {cartList?.map((item) => (
-                  <CartItem key={item.id} cart={item}></CartItem>
-                ))}
-              </ListCartItem>
-              {cartList.length <= 0 && (
-                <div className="flex flex-col items-center justify-center gap-5 mt-5">
-                  <img src="/images/empty-cart.png" alt="" />
-                  <p className="text-center">You have no products in your cart</p>
-                </div>
-              )}
+            <div className="w-[880px] p-5 border border-gray3 rounded-md flex flex-col justify-between bg-white max-lg:w-full">
+              <div>
+                <ListCartItem>
+                  {cartList?.map((item) => (
+                    <CartItem
+                      key={item.id}
+                      cart={item}
+                      onRemoveAll={handleRemoveCartAll}
+                    ></CartItem>
+                  ))}
+                </ListCartItem>
+                {cartList.length <= 0 && (
+                  <div className="flex flex-col items-center justify-center gap-5 mt-5">
+                    <img src="/images/empty-cart.png" alt="" />
+                    <p className="text-center">You have no products in your cart</p>
+                  </div>
+                )}
+              </div>
               <div className="flex justify-between items-center mt-5">
                 <Button to="/products" className="flex gap-2">
                   <span>
@@ -118,6 +141,23 @@ export default function CartPage() {
                       currency: 'VND',
                     })}
                   </p>
+                </div>
+                <div className="mt-5">
+                  <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="border border-gray3 rounded-lg p-3 w-full"
+                    placeholder="Enter the address"
+                  />
+                </div>
+                <div className="mt-5">
+                  <textarea
+                    placeholder="Note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    className="border border-gray3 rounded-lg p-3 w-full min-h-[100px]"
+                  ></textarea>
                 </div>
                 <button
                   onClick={handleCheckoutBill}
@@ -211,7 +251,6 @@ export default function CartPage() {
           </div>
         </div>
       </div>
-      )
     </>
   );
 }
