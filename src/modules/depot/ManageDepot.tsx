@@ -72,8 +72,8 @@ export function ManageDepot() {
             <div className="py-4 px-2 w-[100px]">
               <p className="font-bold text-[#232321CC] text-center">ID</p>
             </div>
-            <div className="py-4 px-2 w-[120px]">
-              <p className="font-bold text-[#232321CC] text-center">Id Product</p>
+            <div className="py-4 px-2 w-[250px]">
+              <p className="font-bold text-[#232321CC] text-center">Product</p>
             </div>
             <div className="py-4 px-2 w-[180px]">
               <p className="font-bold text-[#232321CC] text-center">Quantity</p>
@@ -91,8 +91,17 @@ export function ManageDepot() {
                 <div className="py-4 px-2 w-[100px]">
                   <p className="font-bold text-dashboardPrimary text-center">#{depot.ID}</p>
                 </div>
-                <div className="py-4 px-2 w-[120px]">
-                  <p className="font-bold text-dashboardPrimary text-center">{depot.idPRoduct}</p>
+                <div className="py-4 px-2 w-[250px]">
+                  <div className="flex gap-3 items-center">
+                    <img
+                      src={depot.image || '/images/image-none.png'}
+                      alt=""
+                      className="w-[64px] h-[64px] rounded-lg"
+                    />
+                    <p className="font-bold text-dashboardPrimary text-center">
+                      {depot.nameProduct || 'Product'}
+                    </p>
+                  </div>
                 </div>
                 <div className="py-4 px-2 w-[180px] flex gap-2 items-center justify-center">
                   <p className="font-bold text-dashboardPrimary text-center">{depot.quantily}</p>
