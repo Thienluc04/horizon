@@ -24,7 +24,7 @@ export function UpdateUser(_: UpdateUserProps) {
     mode: 'onSubmit',
   });
 
-  const [isCustomer, setIsCustomer] = useState<boolean>(false);
+  const [, setIsCustomer] = useState<boolean>(false);
 
   const { slug } = useParams();
   const dispatch = useAppDispatch();
