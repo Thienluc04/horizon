@@ -79,7 +79,7 @@ export function UpdateUser(_: UpdateUserProps) {
       <form onSubmit={handleSubmit(handleChangeRoleUser)} className="flex-1">
         <div className="flex flex-col gap-5 lg:gap-10 lg:mt-10 mt-5 px-4">
           <div className="flex lg:flex-row flex-col items-end gap-5 lg:gap-10">
-            {watchRole && !isCustomer && (
+            {
               <div className="flex-1 flex flex-col gap-3">
                 <Label htmlFor="idRole">Role</Label>
                 <div className="flex flex-wrap gap-5">
@@ -130,7 +130,7 @@ export function UpdateUser(_: UpdateUserProps) {
                   </Radio>
                 </div>
               </div>
-            )}
+            }
             <div className="flex-1 flex gap-2 items-center">
               <Button onClick={handleResetPass} kind="dashboardSecondary">
                 Reset pass
