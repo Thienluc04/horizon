@@ -1,3 +1,5 @@
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { productAction, selectParamsProduct } from 'features/product/productSlice';
 import { Link } from 'react-router-dom';
 
 export interface NavigationProps {
@@ -5,6 +7,19 @@ export interface NavigationProps {
 }
 
 export function Navigation({ className = '' }: NavigationProps) {
+  const params = useAppSelector(selectParamsProduct);
+
+  const dispatch = useAppDispatch();
+
+  const handleChangeListParam = () => {
+    dispatch(
+      productAction.setParams({
+        ...params,
+        limit: 6,
+      })
+    );
+  };
+
   return (
     <div className={`border-t border-b border-gray3 px-5 xl:block hidden ${className}`}>
       <div className="flex items-center justify-between py-4 max-w-[1180px] mx-auto">
@@ -20,7 +35,7 @@ export function Navigation({ className = '' }: NavigationProps) {
               <path d="M3 18H21V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z" fill="#1C1C1C" />
             </svg>
           </Link>
-          <Link to="/products" className="flex gap-2">
+          <Link onClick={handleChangeListParam} to="/products" className="flex gap-2">
             List Products
           </Link>
         </div>

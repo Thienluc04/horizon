@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { Button } from 'components/button';
-import { authAction } from 'features/auth/authSlice';
+import { authAction, selectCurrentUser } from 'features/auth/authSlice';
 import { cartActions, selectListCart } from 'features/cart/cartSlice';
 import { productAction, selectParamsProduct } from 'features/product/productSlice';
-import { Cart, CurrentUser } from 'models';
+import { Cart } from 'models';
 import { FormEvent, useEffect, useRef } from 'react';
 import { useCookies } from 'react-cookie';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -21,9 +21,9 @@ export function Header({}: HeaderProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [cookies, , removeCookies] = useCookies(['currentUser']);
+  const [cookies, , removeCookie] = useCookies(['currentUser']);
 
-  const currentUser: CurrentUser = cookies.currentUser;
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const params = useAppSelector(selectParamsProduct);
   const listCart = useAppSelector(selectListCart);
@@ -33,6 +33,12 @@ export function Header({}: HeaderProps) {
       localStorage.setItem('my_cart', JSON.stringify(listCart));
     }
   }, [listCart]);
+
+  useEffect(() => {
+    if (cookies.currentUser) {
+      dispatch(authAction.authLoginSuccess(cookies.currentUser));
+    }
+  }, []);
 
   useEffect(() => {
     if (localStorage.getItem('my_cart')) {
@@ -77,10 +83,9 @@ export function Header({}: HeaderProps) {
   };
 
   const handleLogOut = async () => {
-    dispatch(authAction.authLogOut);
-    removeCookies('currentUser');
+    dispatch(authAction.authLogOut());
+    removeCookie('currentUser');
     navigate('/');
-    document.location.reload();
   };
 
   const handleShowDropMenu = async () => {

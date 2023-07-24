@@ -18,10 +18,9 @@ export function Sidebar(_: SidebarProps) {
   const navigate = useNavigate();
 
   const handleLogOut = async () => {
-    dispatch(authAction.authLogOut);
+    dispatch(authAction.authLogOut());
     removeCookies('currentUser');
     navigate('/');
-    document.location.reload();
   };
 
   const listPath = [
